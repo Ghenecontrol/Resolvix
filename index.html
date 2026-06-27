@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resolve — The AI Command Center for B2B SaaS Support Teams</title>
+<meta name="description" content="Resolve reads your knowledge base, understands every incoming ticket, and automatically resolves 70%+ — sending only the hard cases to your team.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2322d3ee'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='%23061018' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg:#090c12;
+  --bg-soft:#0c1019;
+  --surface:#10141d;
+  --surface-2:#151a25;
+  --border:rgba(255,255,255,.08);
+  --border-strong:rgba(255,255,255,.16);
+  --text:#f2f5f9;
+  --text-dim:#9aa7bb;
+  --text-faint:#5e6b80;
+  --cyan:#22d3ee;
+  --cyan-soft:rgba(34,211,238,.12);
+  --cyan-deep:#0c8599;
+  --red:#f3645b;
+  --red-soft:rgba(243,100,91,.12);
+  --green:#2dd581;
+  --green-soft:rgba(45,213,129,.12);
+  --amber:#f5a623;
+  --amber-soft:rgba(245,166,35,.12);
+  --purple:#a78bfa;
+  --purple-soft:rgba(167,139,250,.12);
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --radius:14px;
+  --radius-sm:9px;
+  --container:1240px;
+  --shadow:0 20px 50px -20px rgba(0,0,0,.6);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit}
+::selection{background:var(--cyan-soft);color:var(--cyan)}
+
+.container{max-width:var(--container);margin:0 auto;padding:0 24px}
+@media (min-width:768px){.container{padding:0 40px}}
+
+.section{padding:88px 0}
+@media (min-width:768px){.section{padding:130px 0}}
+.section--tight{padding-top:0}
+
+/* ============ TYPOGRAPHY ============ */
+h1,h2,h3{font-weight:800;letter-spacing:-.02em;line-height:1.08;color:var(--text)}
+h1{font-size:clamp(2.4rem,6vw,4.6rem)}
+h2{font-size:clamp(1.9rem,4.4vw,3.1rem)}
+h3{font-size:1.3rem}
+.cyan{color:var(--cyan)}
+.red{color:var(--red)}
+.amber{color:var(--amber)}
+.green{color:var(--green)}
+.purple{color:var(--purple)}
+.lede{color:var(--text-dim);font-size:1.15rem;line-height:1.65;max-width:680px}
+.mono{font-family:var(--mono)}
+
+.section-head{max-width:760px;margin:0 auto 56px;text-align:center}
+.section-head .lede{margin:18px auto 0}
+.section-head--left{text-align:left;margin-left:0}
+
+/* ============ EYEBROW BADGE ============ */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 16px;border-radius:99px;border:1px solid var(--border-strong);
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;font-weight:500;
+  background:var(--surface);color:var(--text-dim);margin-bottom:22px;
+}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);flex-shrink:0}
+.eyebrow .dot--pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.eyebrow--red{border-color:rgba(243,100,91,.35);color:var(--red);background:var(--red-soft)}
+.eyebrow--cyan{border-color:rgba(34,211,238,.35);color:var(--cyan);background:var(--cyan-soft)}
+.eyebrow--amber{border-color:rgba(245,166,35,.35);color:var(--amber);background:var(--amber-soft)}
+.eyebrow--green{border-color:rgba(45,213,129,.35);color:var(--green);background:var(--green-soft)}
+.eyebrow--purple{border-color:rgba(167,139,250,.35);color:var(--purple);background:var(--purple-soft)}
+
+/* ============ BUTTONS ============ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 26px;border-radius:var(--radius-sm);font-weight:700;font-size:.95rem;
+  white-space:nowrap;transition:transform .15s ease,opacity .15s ease;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--cyan);color:#06141a}
+.btn-success{background:var(--green)!important;color:#06141a!important}
+.input-error{border-color:var(--red)!important}
+.btn-primary:hover{opacity:.9}
+.btn-ghost{background:transparent;border:1px solid var(--border-strong);color:var(--text)}
+.btn-ghost:hover{border-color:var(--cyan)}
+.btn-sm{padding:9px 16px;font-size:.85rem}
+.btn-link{display:inline-flex;align-items:center;gap:6px;color:var(--cyan);font-weight:600;font-size:.95rem}
+
+/* ============ NAV ============ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(9,12,18,.72);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.nav .container{display:flex;align-items:center;justify-content:space-between;height:72px}
+.nav__logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem}
+.nav__logo .mark{width:30px;height:30px;border-radius:8px;background:var(--cyan);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav__logo .mark svg{width:16px;height:16px}
+.nav__links{display:none;align-items:center;gap:36px;font-size:.93rem;color:var(--text-dim);font-weight:500}
+.nav__links a:hover{color:var(--text)}
+@media (min-width:900px){.nav__links{display:flex}}
+.nav__right{display:flex;align-items:center;gap:20px}
+.nav__signin{font-size:.93rem;color:var(--text-dim);font-weight:500;display:none}
+@media (min-width:640px){.nav__signin{display:inline}}
+.nav__signin:hover{color:var(--text)}
+.nav__toggle{display:flex;flex-direction:column;gap:4px;width:22px}
+@media (min-width:900px){.nav__toggle{display:none}}
+.nav__toggle span{height:2px;background:var(--text);border-radius:2px;transition:transform .2s,opacity .2s}
+.nav__mobile{display:none;flex-direction:column;gap:18px;padding:20px 24px 28px;border-top:1px solid var(--border)}
+.nav__mobile.is-open{display:flex}
+.nav__mobile a{color:var(--text-dim);font-weight:500}
+
+/* ============ HERO ============ */
+.hero{padding:150px 0 90px;position:relative;overflow:hidden}
+.parallax-blob{position:absolute;pointer-events:none;z-index:-1;will-change:transform}
+.hero-glow{top:-80px;left:50%;margin-left:-450px;width:900px;height:500px;background:radial-gradient(circle,rgba(34,211,238,.10),transparent 70%)}
+.whynow-glow{top:-60px;left:50%;margin-left:-380px;width:760px;height:420px;background:radial-gradient(circle,rgba(245,166,35,.09),transparent 70%)}
+.cta-glow{top:-90px;left:50%;margin-left:-420px;width:840px;height:460px;background:radial-gradient(circle,rgba(34,211,238,.12),transparent 70%)}
+.hero__grid{display:grid;gap:48px;position:relative;z-index:1}
+@media (min-width:1080px){.hero__grid{grid-template-columns:1.15fr .85fr;align-items:start}}
+.hero h1{margin-bottom:22px}
+.hero .lede{margin-bottom:30px;font-size:1.2rem}
+.trust-row{display:flex;flex-wrap:wrap;gap:22px;margin-bottom:34px}
+.trust-row span{display:flex;align-items:center;gap:7px;font-size:.85rem;color:var(--text-dim);font-family:var(--mono)}
+.trust-row svg{width:15px;height:15px;color:var(--cyan);flex-shrink:0}
+.hero-form{display:flex;gap:10px;max-width:480px;margin-bottom:16px}
+.hero-form input{
+  flex:1;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+  padding:13px 16px;color:var(--text);font-size:.95rem;
+}
+.hero-form input:focus{outline:2px solid var(--cyan);outline-offset:1px}
+.hero-form input::placeholder{color:var(--text-faint)}
+.fine-print{font-family:var(--mono);font-size:.78rem;color:var(--text-faint)}
+
+.stat-panel{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;
+}
+.stat-card .label{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--text-faint);text-transform:uppercase;margin-bottom:10px}
+.stat-card .value{font-size:1.9rem;font-weight:800;margin-bottom:4px;font-family:var(--mono)}
+.stat-card .delta{font-size:.78rem;font-family:var(--mono);color:var(--cyan)}
+.stat-card .delta--down{color:var(--cyan)}
+
+/* ============ LOGOS ============ */
+.logos{padding:50px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.logos p{text-align:center;font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;color:var(--text-faint);margin-bottom:30px;text-transform:uppercase}
+.logos__row{display:flex;flex-wrap:wrap;justify-content:center;gap:48px;font-weight:700;font-size:1.05rem;color:var(--text-faint)}
+
+/* ============ PROBLEM ============ */
+.problem__grid{display:grid;gap:28px;margin-bottom:40px}
+@media (min-width:980px){.problem__grid{grid-template-columns:1fr 1fr}}
+.inbox{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.inbox__head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)}
+.inbox__head .title{display:flex;align-items:center;gap:9px;font-weight:600;font-size:.92rem}
+.inbox__head .title svg{width:16px;height:16px;color:var(--red)}
+.inbox__head .unread{color:var(--red);font-family:var(--mono);font-size:.85rem;display:flex;align-items:center;gap:6px}
+.inbox__head .unread::after{content:'';width:7px;height:7px;border-radius:50%;background:var(--red)}
+.inbox__cols{display:flex;justify-content:space-between;padding:10px 20px;font-family:var(--mono);font-size:.68rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em}
+.inbox__list{padding:0 16px 16px}
+.ticket-row{
+  padding:12px 14px;margin-bottom:8px;border-radius:var(--radius-sm);
+  border:1px solid rgba(243,100,91,.3);background:rgba(243,100,91,.04);
+  transition:border-color .25s ease,background .25s ease;
+}
+.ticket-row__top{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;user-select:none}
+.ticket-row__top:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:6px}
+.ticket-row .id{font-family:var(--mono);font-size:.72rem;color:var(--text-faint);margin-right:10px}
+.ticket-row .desc{font-size:.88rem;font-weight:600}
+.ticket-row .wait{font-family:var(--mono);font-size:.82rem;color:var(--red);flex-shrink:0;display:flex;align-items:center}
+.ticket-row .chev{display:inline-block;margin-left:9px;color:var(--text-faint);transition:transform .2s ease;font-size:.8rem}
+.ticket-row.is-open .chev{transform:rotate(180deg)}
+.ticket-row__detail{max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease,opacity .2s ease,margin-top .25s ease}
+.ticket-row.is-open .ticket-row__detail{max-height:140px;opacity:1;margin-top:11px;padding-top:11px;border-top:1px dashed var(--border)}
+.ticket-row__detail .msg{font-size:.82rem;color:var(--text-dim);line-height:1.55;font-style:italic;margin-bottom:10px}
+.detail-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.waiting-tag{font-family:var(--mono);font-size:.72rem;color:var(--red)}
+.reply-btn{font-family:var(--mono);font-size:.72rem;padding:5px 11px;border-radius:6px;border:1px solid var(--border);color:var(--text-faint);background:var(--bg-soft);cursor:not-allowed}
+.ticket-row.is-read{border-color:var(--border);background:transparent}
+.ticket-row.is-read .desc{color:var(--text-dim);font-weight:500}
+.ticket-row.is-read .wait{color:var(--text-faint)}
+.inbox__foot{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border);background:rgba(243,100,91,.05)}
+.inbox__foot .k{font-family:var(--mono);font-size:.72rem;color:var(--red);text-transform:uppercase;letter-spacing:.04em}
+.inbox__foot .v{font-family:var(--mono);font-weight:700;color:var(--red);font-size:1.05rem}
+
+.metric-stack{display:flex;flex-direction:column;gap:18px}
+.metric-card{
+  display:flex;gap:16px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+}
+.metric-card .icon{
+  width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:1.1rem;font-weight:800;font-family:var(--mono);
+}
+.metric-card .icon--red{background:var(--red-soft);color:var(--red)}
+.metric-card .icon--amber{background:var(--amber-soft);color:var(--amber)}
+.metric-card .icon--cyan{background:var(--cyan-soft);color:var(--cyan)}
+.metric-card .big{font-size:1.5rem;font-weight:800;font-family:var(--mono);margin-bottom:3px}
+.metric-card .ttl{font-weight:700;font-size:.97rem;margin-bottom:5px}
+.metric-card .desc{color:var(--text-dim);font-size:.86rem;line-height:1.5}
+
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px}
+.chart-card__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px}
+.chart-card__head .ttl{font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;color:var(--text-dim);text-transform:uppercase}
+.chart-card__head .tag{font-family:var(--mono);font-size:.78rem;color:var(--red)}
+.chart-legend{display:flex;gap:22px;margin-top:18px;font-family:var(--mono);font-size:.8rem;color:var(--text-dim)}
+.chart-legend span{display:flex;align-items:center;gap:8px}
+.chart-legend .sw{width:18px;height:3px;border-radius:2px}
+
+/* ============ SOLUTION ============ */
+.compare{display:grid;gap:24px;margin-bottom:48px}
+@media (min-width:980px){.compare{grid-template-columns:1fr 1fr}}
+.compare__col .tag{font-family:var(--mono);font-size:.76rem;letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px;display:block}
+.compare__col--bad .tag{color:var(--red)}
+.compare__col--good .tag{color:var(--cyan);display:flex;align-items:center;gap:8px}
+.engine{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;height:100%}
+.engine__head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)}
+.engine__head .title{display:flex;align-items:center;gap:9px;font-weight:600;font-size:.92rem}
+.engine__head .title svg{width:16px;height:16px;color:var(--cyan)}
+.engine__head .live{color:var(--cyan);font-family:var(--mono);font-size:.8rem;display:flex;align-items:center;gap:6px}
+.engine__head .live::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 1.6s infinite}
+.engine__body{flex:1;min-height:160px;display:flex;flex-direction:column;padding:16px 18px 14px}
+.chat-msgs{flex:1;display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:230px;padding-right:4px;margin-bottom:12px;scrollbar-width:thin}
+.chat-msgs::-webkit-scrollbar{width:5px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px}
+.chat-msg{display:flex}
+.chat-msg--user{justify-content:flex-end}
+.chat-msg .bubble{max-width:86%;padding:9px 13px;border-radius:12px;font-size:.84rem;line-height:1.5;background:var(--surface-2);border:1px solid var(--border)}
+.chat-msg--user .bubble{background:var(--cyan-soft);border-color:rgba(34,211,238,.3);color:var(--text)}
+.chat-msg__meta{display:flex;align-items:center;gap:8px;margin-top:6px;font-family:var(--mono);font-size:.66rem}
+.chat-msg__meta .conf{padding:2px 8px;border-radius:5px;font-weight:600}
+.chat-msg__meta .src{color:var(--text-faint)}
+.chat-typing{display:flex;gap:4px;padding:11px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;width:fit-content}
+.chat-typing span{width:6px;height:6px;border-radius:50%;background:var(--text-faint);animation:typingBounce 1.1s infinite}
+.chat-typing span:nth-child(2){animation-delay:.15s}
+.chat-typing span:nth-child(3){animation-delay:.3s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+.chat-suggest{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:11px}
+.chip{font-family:var(--mono);font-size:.72rem;padding:6px 12px;border-radius:99px;border:1px solid var(--border);color:var(--text-dim);background:var(--surface-2);transition:border-color .2s,color .2s}
+.chip:hover{border-color:var(--cyan);color:var(--cyan)}
+.chat-input-row{display:flex;gap:8px}
+.chat-input-row input{
+  flex:1;background:var(--bg-soft);border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+  padding:10px 14px;color:var(--text);font-size:.85rem;
+}
+.chat-input-row input:focus{outline:2px solid var(--cyan);outline-offset:1px}
+.chat-input-row input::placeholder{color:var(--text-faint)}
+.chat-send{
+  width:38px;height:38px;border-radius:var(--radius-sm);background:var(--cyan);color:#06141a;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0;
+  transition:opacity .15s ease;
+}
+.chat-send:hover{opacity:.88}
+.chat-send:disabled{opacity:.5;cursor:not-allowed}
+.engine__foot{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border);background:var(--cyan-soft)}
+.engine__foot .k{font-family:var(--mono);font-size:.72rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.04em}
+.engine__foot .v{font-family:var(--mono);font-weight:700;color:var(--cyan);font-size:1.05rem}
+
+.step-grid{display:grid;gap:22px}
+@media (min-width:860px){.step-grid{grid-template-columns:repeat(3,1fr)}}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);position:relative;overflow:hidden}
+.step-card .flip-face{padding:28px 24px}
+.step-card .icon-box{width:46px;height:46px;border-radius:11px;background:var(--cyan-soft);color:var(--cyan);display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.step-card .icon-box svg{width:22px;height:22px}
+.step-card .num{font-family:var(--mono);color:var(--text-faint);font-size:.85rem;margin-bottom:6px}
+.step-card h3{margin-bottom:12px;font-size:1.2rem}
+.step-card p{color:var(--text-dim);font-size:.92rem;line-height:1.6}
+
+/* ============ TECH ============ */
+.tech__grid{display:grid;gap:28px}
+@media (min-width:980px){.tech__grid{grid-template-columns:1fr 1fr}}
+.tech__col{display:flex;flex-direction:column;gap:18px}
+.info-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px}
+.info-box .ttl{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px}
+.info-box .ttl svg{width:16px;height:16px;color:var(--cyan)}
+.info-box ul li{display:flex;gap:9px;align-items:flex-start;font-size:.9rem;color:var(--text-dim);padding:6px 0}
+.info-box ul li::before{content:'›';color:var(--cyan);font-weight:700;flex-shrink:0}
+
+.rag-graph{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:18px}
+.rag-graph .label{font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.rag-live{font-size:.68rem;color:var(--cyan);letter-spacing:.02em}
+.rag-graph__canvas{position:relative;width:100%;height:230px}
+.rag-graph__canvas svg{width:100%;height:100%;display:block;overflow:visible}
+.rgline{transition:stroke .25s ease,stroke-width .25s ease;animation:rgFlow 1.3s linear infinite}
+.rgline.is-active{stroke:#22d3ee!important;stroke-width:2.4}
+@keyframes rgFlow{to{stroke-dashoffset:-22}}
+.rgnode{cursor:pointer}
+.rgnode.is-dim{opacity:.32;transition:opacity .25s ease}
+.rgnode__glow{fill:#22d3ee;opacity:0;filter:blur(7px);transition:opacity .25s ease}
+.rgnode:hover .rgnode__glow,.rgnode:focus .rgnode__glow,.rgnode.is-active-node .rgnode__glow{opacity:.35}
+.rgnode__ring{fill:#0d1119;stroke:#465065;stroke-width:2;transition:stroke .25s ease,fill .25s ease}
+.rgnode:hover .rgnode__ring,.rgnode:focus .rgnode__ring,.rgnode.is-active-node .rgnode__ring{stroke:#22d3ee}
+.rgnode.is-hub .rgnode__ring{fill:#22d3ee;stroke:#22d3ee}
+.rgnode.is-hub .rgnode__glow{opacity:.22}
+.rgnode__label{fill:#5e6b80;font-family:'JetBrains Mono',monospace;font-size:10.5px;transition:fill .25s ease}
+.rgnode.is-hub .rgnode__label{fill:#9aa7bb}
+.rgnode:hover .rgnode__label,.rgnode:focus .rgnode__label,.rgnode.is-active-node .rgnode__label{fill:#f2f5f9}
+.rgnode:focus{outline:none}
+.rgnode:focus .rgnode__ring{stroke-width:2.6}
+.rag-tooltip{
+  position:absolute;transform:translate(-50%,0);background:var(--surface-2);border:1px solid var(--border-strong);
+  border-radius:8px;padding:9px 12px;font-size:.74rem;line-height:1.5;color:var(--text-dim);max-width:190px;
+  pointer-events:none;opacity:0;transition:opacity .2s ease;z-index:5;box-shadow:var(--shadow);
+}
+.rag-tooltip b{display:block;color:var(--text);font-family:var(--mono);font-size:.74rem;margin-bottom:2px}
+.rag-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.rag-metrics .m{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center}
+.rag-metrics .m .v{font-family:var(--mono);font-weight:700;color:var(--cyan);font-size:1.1rem}
+.rag-metrics .m .l{font-size:.74rem;color:var(--text-dim);margin-top:3px}
+.rag-metrics .m .s{font-family:var(--mono);font-size:.66rem;color:var(--text-faint);margin-top:2px}
+
+.bar-chart{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px}
+.bar-chart .label{font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);margin-bottom:20px;display:block}
+.bar-chart{position:relative}
+.bar-chart__bars{display:flex;align-items:flex-end;gap:18px;height:160px;border-bottom:1px solid var(--border);padding-bottom:2px}
+.bar-chart__bars .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;cursor:pointer}
+.bar-chart__bars .bar-wrap:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px}
+.bar-chart__bars .bar{width:100%;border-radius:4px 4px 0 0;transition:filter .2s ease,transform .2s ease,opacity .2s ease;transform-origin:bottom}
+.bar-wrap:hover .bar,.bar-wrap:focus .bar,.bar-wrap.is-active .bar{filter:brightness(1.3);transform:scaleX(1.08)}
+.bar-wrap.is-dim .bar{opacity:.4}
+.bar-tooltip{position:absolute;top:-8px;transform:translate(-50%,-100%);background:var(--surface-2);border:1px solid var(--border-strong);border-radius:8px;padding:8px 12px;font-family:var(--mono);font-size:.74rem;color:var(--text);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease;box-shadow:var(--shadow);z-index:5}
+.bar-tooltip b{color:var(--cyan)}
+.bar-chart__labels{display:flex;gap:18px;margin-top:8px}
+.bar-chart__labels span{flex:1;text-align:center;font-family:var(--mono);font-size:.7rem;color:var(--text-faint)}
+.bar-chart p.caption{color:var(--text-dim);font-size:.86rem;margin-top:18px;line-height:1.55}
+
+/* ============ FEATURES ============ */
+.feature-grid{display:grid;gap:22px}
+@media (min-width:760px){.feature-grid{grid-template-columns:repeat(3,1fr)}}
+.feature-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);position:relative;overflow:hidden}
+.feature-card .flip-face{padding:28px 24px}
+.feature-card .icon-box{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.feature-card .icon-box svg{width:22px;height:22px}
+.feature-card h3{font-size:1.15rem;margin-bottom:10px}
+.feature-card p{color:var(--text-dim);font-size:.9rem;line-height:1.6}
+.icon-box--cyan{background:var(--cyan-soft);color:var(--cyan)}
+.icon-box--green{background:var(--green-soft);color:var(--green)}
+.icon-box--blue{background:rgba(96,165,250,.12);color:#60a5fa}
+.icon-box--amber{background:var(--amber-soft);color:var(--amber)}
+.icon-box--purple{background:var(--purple-soft);color:var(--purple)}
+
+/* ============ PREVIEW ============ */
+.browser-mock{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.browser-mock__bar{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+.browser-mock__dots{display:flex;gap:7px}
+.browser-mock__dots span{width:11px;height:11px;border-radius:50%}
+.browser-mock__url{font-family:var(--mono);font-size:.8rem;color:var(--text-faint);background:var(--bg-soft);padding:5px 14px;border-radius:6px;flex:1;max-width:280px}
+.dash{display:grid;grid-template-columns:180px 1fr}
+@media (max-width:760px){.dash{grid-template-columns:1fr}}
+.dash__sidebar{border-right:1px solid var(--border);padding:22px 14px;display:flex;flex-direction:column;gap:4px}
+@media (max-width:760px){.dash__sidebar{display:none}}
+.dash__sidebar .brand{display:flex;align-items:center;gap:8px;font-weight:800;padding:0 8px 18px;color:var(--cyan)}
+.dash__sidebar .brand .mark{width:20px;height:20px;border-radius:5px;background:var(--cyan);flex-shrink:0}
+.dash__nav-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:8px;font-size:.86rem;color:var(--text-dim)}
+.dash__nav-item.active{background:var(--cyan-soft);color:var(--cyan);font-weight:600}
+.dash__main{padding:26px}
+.dash__stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px}
+@media (min-width:560px){.dash__stats{grid-template-columns:repeat(4,1fr)}}
+.dash__stat .label{font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px}
+.dash__stat .value{font-family:var(--mono);font-weight:800;font-size:1.35rem}
+.dash__stat .delta{font-family:var(--mono);font-size:.72rem;color:var(--cyan)}
+.dash__chart-label{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);margin-bottom:10px}
+.dash__rows{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.dash__rows .row{display:flex;justify-content:space-between;font-size:.85rem;padding:6px 0;border-bottom:1px solid var(--border)}
+.dash__rows .row .pct{font-family:var(--mono)}
+.dash__rows .row.bad .pct{color:var(--red)}
+.dash__rows .row.good .pct{color:var(--cyan)}
+
+.stream{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.stream__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.stream__head .ttl{font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim)}
+.stream__head .proc{font-family:var(--mono);font-size:.78rem;color:var(--cyan);display:flex;align-items:center;gap:6px}
+.stream__head .proc::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 1.6s infinite}
+.stream-row{display:flex;flex-direction:column;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.stream-row:last-child{border-bottom:none}
+.stream-row__top{display:flex;align-items:center;gap:12px}
+.stream-row .sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.stream-row .sdot--ok{background:var(--cyan)}
+.stream-row .sdot--bad{background:var(--red)}
+.stream-row .sid{font-family:var(--mono);font-size:.78rem;color:var(--text-faint);width:78px;flex-shrink:0}
+.stream-row .sdesc{flex:1;font-size:.88rem;font-weight:600}
+.stream-row .spct{font-family:var(--mono);font-size:.78rem;padding:4px 10px;border-radius:6px;flex-shrink:0}
+.stream-row .spct--ok{color:var(--cyan);background:var(--cyan-soft)}
+.stream-row .spct--bad{color:var(--red);background:var(--red-soft)}
+.stream-row__detail{max-height:0;opacity:0;overflow:hidden;padding-left:20px;font-size:.78rem;font-family:var(--mono);color:var(--text-faint);transition:max-height .2s ease,opacity .15s ease,margin-top .2s ease}
+.stream-row__detail b{color:var(--text-dim);font-weight:600}
+.stream-row.is-open .stream-row__detail{max-height:30px;opacity:1;margin-top:8px}
+
+.trend-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.trend-card .ttl{font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);margin-bottom:18px;display:block}
+.preview__grid{display:grid;gap:20px;margin-top:24px}
+@media (min-width:980px){.preview__grid{grid-template-columns:1.3fr 1fr}}
+
+.big-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:48px;text-align:center}
+@media (min-width:760px){.big-stats{grid-template-columns:repeat(4,1fr)}}
+.big-stats .v{font-family:var(--mono);font-size:2rem;font-weight:800;color:var(--cyan)}
+.big-stats .l{font-weight:600;margin-top:6px}
+.big-stats .s{color:var(--text-faint);font-size:.82rem;margin-top:3px}
+
+/* ============ WHY NOW ============ */
+.why-grid{display:grid;gap:22px}
+@media (min-width:760px){.why-grid{grid-template-columns:1fr 1fr}}
+.why-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);position:relative;overflow:hidden}
+.why-card .flip-face{padding:28px}
+.why-card .num{font-family:var(--mono);color:var(--text-faint);font-size:.9rem;margin-bottom:10px}
+.why-card h3{font-size:1.15rem;margin-bottom:12px}
+.why-card p{color:var(--text-dim);font-size:.92rem;line-height:1.65}
+
+/* ============ INFRA ============ */
+.infra-banner{
+  position:relative;border-radius:var(--radius);overflow:hidden;padding:32px 28px;margin:30px 0 24px;
+  background:linear-gradient(135deg,#0f1a24,#0c1019 60%);border:1px solid var(--border);
+}
+.infra-banner::before{
+  content:'';position:absolute;inset:0;opacity:.5;
+  background-image:radial-gradient(circle at 20% 20%,rgba(34,211,238,.18),transparent 40%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.14),transparent 45%);
+}
+.infra-banner p{position:relative;color:var(--text-dim);font-size:.97rem;line-height:1.7;max-width:880px}
+.infra-grid{display:grid;gap:18px;margin-bottom:48px}
+@media (min-width:760px){.infra-grid{grid-template-columns:repeat(3,1fr)}}
+.infra-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);position:relative;overflow:hidden}
+.infra-card .flip-face{padding:22px}
+.infra-card .ico{font-size:1.3rem;margin-bottom:12px}
+.infra-card h4{color:var(--amber);font-size:1rem;margin-bottom:9px;font-weight:700}
+.infra-card.nvidia h4{color:var(--green)}
+.infra-card p{color:var(--text-dim);font-size:.86rem;line-height:1.55}
+.pill-tag{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:99px;border:1px solid var(--border-strong);font-family:var(--mono);font-size:.78rem;color:var(--text-dim);margin-bottom:18px}
+
+/* ============ MARKET ============ */
+.funnel-grid{display:grid;gap:20px;margin-bottom:48px}
+@media (min-width:860px){.funnel-grid{grid-template-columns:repeat(3,1fr)}}
+.funnel-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);text-align:center;position:relative;overflow:hidden}
+.funnel-card .flip-face{padding:30px 26px}
+.funnel-card .flip-face--back{padding:30px 26px}
+.funnel-card .k{font-family:var(--mono);font-size:.74rem;letter-spacing:.05em;color:var(--text-faint);text-transform:uppercase}
+.funnel-card .k2{font-size:.88rem;color:var(--text-dim);margin-top:2px;margin-bottom:14px}
+.funnel-card .v{font-size:2.4rem;font-weight:800;color:var(--cyan);font-family:var(--mono);margin-bottom:14px}
+.funnel-card p{color:var(--text-dim);font-size:.88rem;line-height:1.6}
+.market-cols{display:grid;gap:28px}
+@media (min-width:860px){.market-cols{grid-template-columns:repeat(3,1fr)}}
+.market-col .ttl{font-family:var(--mono);font-size:.76rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);margin-bottom:18px}
+.market-col ul li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:.92rem}
+.market-col ul li:last-child{border-bottom:none}
+.market-col ul li svg{width:16px;height:16px;color:var(--cyan);flex-shrink:0;margin-top:2px}
+.market-col ul li .flag{font-family:var(--mono);font-size:.74rem;color:var(--text-faint);width:24px;flex-shrink:0}
+
+/* ============ TRACTION ============ */
+.traction-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:40px}
+@media (min-width:760px){.traction-stats{grid-template-columns:repeat(4,1fr)}}
+.traction-stats .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px 20px;text-align:center}
+.traction-stats .v{font-family:var(--mono);font-size:1.9rem;font-weight:800;color:var(--cyan)}
+.traction-stats .l{font-weight:600;margin-top:6px;font-size:.95rem}
+.traction-stats .s{color:var(--text-faint);font-size:.78rem;margin-top:3px}
+.traction-cols{display:grid;gap:24px}
+@media (min-width:900px){.traction-cols{grid-template-columns:1fr 1fr}}
+.traction-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px}
+.traction-card .ttl{font-family:var(--mono);font-size:.76rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);margin-bottom:18px}
+.check-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:.92rem;font-weight:600}
+.check-item:last-child{border-bottom:none}
+.check-item .l-side{display:flex;align-items:center;gap:10px}
+.check-item svg{width:17px;height:17px;color:var(--cyan);flex-shrink:0}
+.check-item svg.spin{color:var(--amber)}
+.status-chip{font-family:var(--mono);font-size:.68rem;padding:3px 9px;border-radius:6px;background:var(--amber-soft);color:var(--amber);letter-spacing:.04em}
+.partner-result{padding:14px 0;border-bottom:1px solid var(--border)}
+.partner-result:last-child{border-bottom:none}
+.partner-result__head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;font-size:.92rem}
+.partner-result__head b{font-weight:700}
+.partner-result__head .pct{color:var(--cyan);font-family:var(--mono);font-weight:700}
+.progress{height:6px;border-radius:4px;background:var(--bg-soft);overflow:hidden;margin-bottom:8px}
+.progress span{display:block;height:100%;width:0;background:var(--cyan);border-radius:4px;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
+.partner-result p{color:var(--text-dim);font-size:.82rem}
+
+/* ============ ROADMAP ============ */
+.timeline{position:relative;padding-left:36px;display:flex;flex-direction:column;gap:26px}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:1px;background:var(--border-strong)}
+.timeline-item{position:relative;transition:opacity .25s ease}
+.timeline.has-focus .timeline-item:not(.is-focused){opacity:.4}
+.timeline-item.is-focused .timeline-card{border-color:var(--cyan);box-shadow:0 0 0 1px rgba(34,211,238,.25),0 16px 32px -18px rgba(0,0,0,.6)}
+.timeline-item.is-focused .ring{border-color:var(--cyan)}
+.timeline-item .ring{position:absolute;left:-36px;top:24px;width:15px;height:15px;border-radius:50%;border:2px solid var(--text-faint);background:var(--bg)}
+.timeline-item.shipped .ring{border-color:var(--cyan);background:var(--bg)}
+.timeline-item.progress .ring{border-color:var(--amber);background:var(--amber)}
+.timeline-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 26px;cursor:pointer;transition:border-color .2s ease,box-shadow .2s ease}
+.timeline-item.progress .timeline-card{border-color:rgba(245,166,35,.4)}
+.timeline-card__head{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.tl-badge{font-family:var(--mono);font-size:.7rem;padding:4px 10px;border-radius:6px;letter-spacing:.03em}
+.tl-badge--shipped{background:var(--cyan-soft);color:var(--cyan)}
+.tl-badge--progress{background:var(--amber-soft);color:var(--amber)}
+.tl-badge--planned{background:var(--surface-2);color:var(--text-faint)}
+.tl-quarter{font-family:var(--mono);font-size:.78rem;color:var(--text-faint)}
+.timeline-card h3{font-size:1.1rem}
+.tl-items{display:grid;grid-template-columns:1fr;gap:8px;font-size:.9rem;color:var(--text-dim)}
+@media (min-width:640px){.tl-items{grid-template-columns:1fr 1fr}}
+.tl-items div::before{content:'›';color:var(--cyan);margin-right:8px;font-weight:700}
+
+/* ============ TEAM ============ */
+.team-grid{display:grid;gap:22px;margin-bottom:30px}
+@media (min-width:760px){.team-grid{grid-template-columns:1fr 1fr}}
+.team-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+.team-card__head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.team-card__head .avatar{width:58px;height:58px;border-radius:50%;background:var(--surface-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--text-dim);font-size:1.2rem;overflow:hidden}
+.team-card__head h3{font-size:1.1rem}
+.team-card__head .role{color:var(--cyan);font-size:.85rem;font-weight:600}
+.team-card p{color:var(--text-dim);font-size:.9rem;line-height:1.6;margin-bottom:16px}
+.tag-row{display:flex;flex-wrap:wrap;gap:8px}
+.tag-chip{font-family:var(--mono);font-size:.74rem;padding:5px 12px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-dim)}
+.team-foot{text-align:center}
+.team-foot p{color:var(--text-dim);margin-bottom:18px}
+
+/* ============ TESTIMONIALS ============ */
+.testi-grid{display:grid;gap:22px}
+@media (min-width:860px){.testi-grid{grid-template-columns:repeat(3,1fr)}}
+.testi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px}
+.stars{color:var(--amber);letter-spacing:2px;margin-bottom:16px;font-size:1rem}
+.testi-card p{color:var(--text-dim);font-size:.92rem;line-height:1.65;margin-bottom:18px}
+.testi-card .who b{display:block;font-size:.94rem}
+.testi-card .who span{color:var(--text-faint);font-size:.82rem;font-family:var(--mono)}
+
+/* ============ COMPLIANCE ============ */
+.compliance-head{text-align:center;margin-bottom:36px}
+.compliance-head p{color:var(--text-dim);margin-top:10px}
+.compliance-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+@media (min-width:760px){.compliance-grid{grid-template-columns:repeat(4,1fr)}}
+.compliance-badge{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px 18px;text-align:center}
+.compliance-badge .ico{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.compliance-badge .ico svg{width:20px;height:20px}
+.compliance-badge h4{font-size:1rem;margin-bottom:4px}
+.compliance-badge p{color:var(--text-faint);font-size:.78rem}
+
+/* ============ CTA ============ */
+.cta{text-align:center}
+.cta h2{margin-bottom:18px}
+.cta .lede{margin:0 auto 36px}
+.cta-form{display:flex;gap:10px;max-width:480px;margin:0 auto 22px}
+.cta-form input{flex:1;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:13px 16px;color:var(--text);font-size:.95rem}
+.cta-form input:focus{outline:2px solid var(--cyan);outline-offset:1px}
+.cta-check{display:flex;flex-wrap:wrap;justify-content:center;gap:22px;margin-bottom:40px}
+.cta-check span{display:flex;align-items:center;gap:7px;font-size:.85rem;color:var(--text-dim);font-family:var(--mono)}
+.cta-check svg{width:15px;height:15px;color:var(--cyan)}
+.cta-contact{color:var(--text-faint);font-size:.92rem}
+.cta-contact a{color:var(--cyan);font-weight:600;display:inline-flex;align-items:center;gap:7px;margin-top:8px}
+
+/* ============ FOOTER ============ */
+.footer{border-top:1px solid var(--border);padding:64px 0 34px}
+.footer__top{display:grid;gap:40px;margin-bottom:48px}
+@media (min-width:860px){.footer__top{grid-template-columns:1.4fr 1fr 1fr}}
+.footer__brand .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem;margin-bottom:16px}
+.footer__brand .logo .mark{width:26px;height:26px;border-radius:7px;background:var(--cyan);display:flex;align-items:center;justify-content:center}
+.footer__brand .logo .mark svg{width:14px;height:14px}
+.footer__brand p{color:var(--text-dim);font-size:.9rem;max-width:320px;margin-bottom:18px}
+.footer__social{display:flex;gap:14px;margin-bottom:14px}
+.footer__social a{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim)}
+.footer__social a:hover{color:var(--cyan);border-color:var(--cyan)}
+.footer__brand .email{color:var(--text-faint);font-size:.86rem}
+.footer-col h5{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);margin-bottom:18px}
+.footer-col ul li{margin-bottom:12px}
+.footer-col ul li a{color:var(--text-dim);font-size:.92rem}
+.footer-col ul li a:hover{color:var(--text)}
+.footer__bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;padding-top:28px;border-top:1px solid var(--border);color:var(--text-faint);font-size:.82rem}
+
+/* ============ LIVE CONFIDENCE WIDGET ============ */
+.hero-side{display:flex;flex-direction:column;gap:16px}
+.confidence-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:22px 22px 18px;position:relative;
+}
+.confidence-card__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.confidence-card__head .label{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint)}
+.confidence-card__head .live{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.7rem;color:var(--cyan)}
+.confidence-card__head .live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse 1.6s infinite}
+.gauge-wrap{position:relative;display:flex;justify-content:center;margin:2px 0 0}
+.gauge-wrap svg path#confArc{transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1),stroke .4s ease}
+.gauge-value{position:absolute;top:62%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.gauge-value .pct{font-family:var(--mono);font-weight:800;font-size:1.85rem;display:block;color:var(--cyan);transition:color .4s ease}
+.gauge-value .pct-label{font-family:var(--mono);font-size:.62rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em}
+.confidence-ticket{text-align:center;font-size:.84rem;color:var(--text-dim);margin:2px 0 14px;min-height:20px;padding:0 4px;transition:opacity .25s ease}
+.confidence-status{display:flex;justify-content:center;margin-bottom:16px}
+.status-pill{
+  font-family:var(--mono);font-size:.76rem;padding:6px 14px;border-radius:99px;
+  display:inline-flex;align-items:center;gap:7px;font-weight:600;
+  transition:background .4s ease,color .4s ease;
+}
+.status-pill--auto{background:var(--cyan-soft);color:var(--cyan)}
+.status-pill--human{background:var(--amber-soft);color:var(--amber)}
+.status-pill--escalate{background:var(--red-soft);color:var(--red)}
+.confidence-card__foot{display:flex;align-items:center;justify-content:center;gap:8px}
+.conf-dot{width:6px;height:6px;border-radius:50%;background:var(--border-strong);transition:background .3s,transform .3s,width .3s;cursor:pointer}
+.conf-dot.active{background:var(--cyan);width:16px;border-radius:4px}
+.conf-dot:hover{background:var(--text-dim)}
+.conf-dot:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ============ INTERACTIVE CHART ============ */
+.chart-interactive{position:relative}
+.chart-interactive svg{display:block;width:100%;height:auto;aspect-ratio:1000/280}
+.chart-tooltip{
+  position:absolute;top:6px;transform:translateX(-50%);
+  background:var(--surface-2);border:1px solid var(--border-strong);border-radius:9px;
+  padding:10px 13px;font-family:var(--mono);pointer-events:none;opacity:0;
+  transition:opacity .15s ease,left .05s linear;white-space:nowrap;z-index:5;box-shadow:var(--shadow);
+}
+.chart-tooltip .ct-day{color:var(--text);font-weight:700;font-size:.78rem;margin-bottom:7px}
+.chart-tooltip .ct-row{display:flex;align-items:center;gap:7px;color:var(--text-dim);font-size:.76rem;margin-bottom:4px}
+.chart-tooltip .ct-row b{color:var(--text);margin-left:14px}
+.chart-tooltip .ct-sw{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.chart-tooltip .ct-gap{margin-top:7px;padding-top:7px;border-top:1px solid var(--border);color:var(--amber);font-weight:700;font-size:.76rem}
+.chart-hint{text-align:center;font-size:.78rem;color:var(--text-faint);margin-top:14px;font-family:var(--mono)}
+
+.mini-chart-wrap{position:relative}
+
+/* ============ FLIP CARD SYSTEM ============ */
+.flip-card{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.flip-card:hover{border-color:var(--border-strong);transform:translateY(-3px);box-shadow:0 16px 32px -18px rgba(0,0,0,.55)}
+.flip-card{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.flip-stack{display:grid}
+.flip-face{grid-area:1/1;transition:opacity .3s ease,transform .3s ease;backface-visibility:hidden;min-width:0}
+.flip-face--back{opacity:0;transform:scale(.97);pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.flip-card.is-flipped .flip-face--front{opacity:0;transform:scale(.97);pointer-events:none}
+.flip-card.is-flipped .flip-face--back{opacity:1;transform:scale(1);pointer-events:auto}
+.flip-affordance{
+  position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;
+  border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;
+  color:var(--text-faint);font-size:.72rem;transition:border-color .2s ease,color .2s ease;font-family:var(--mono);
+}
+.flip-card:hover .flip-affordance{border-color:var(--cyan);color:var(--cyan)}
+.flip-face--back .back-stat{font-family:var(--mono);font-size:1.5rem;font-weight:800;color:var(--cyan);margin-bottom:8px}
+.flip-face--back .back-note{color:var(--text-dim);font-size:.86rem;line-height:1.55}
+.flip-face--back .back-tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);margin-bottom:10px}
+
+/* ============ UNIVERSAL CARD INTERACTIVITY ============ */
+.stat-card,.metric-card,.team-card,.testi-card,.compliance-badge,
+.traction-stats .card,.dash__stat,.chart-card,.timeline-card,.info-box,.market-col{
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.stat-card:hover,.metric-card:hover,.team-card:hover,.testi-card:hover,.compliance-badge:hover,
+.traction-stats .card:hover,.chart-card:hover,.info-box:hover,.market-col:hover{
+  transform:translateY(-3px);border-color:var(--border-strong);box-shadow:0 16px 32px -18px rgba(0,0,0,.55);
+}
+.dash__stat{padding:6px;border-radius:8px;cursor:default}
+.dash__stat:hover{transform:translateY(-2px);background:var(--surface-2)}
+.big-stats>div{transition:transform .2s ease}
+.big-stats>div:hover{transform:translateY(-3px)}
+.big-stats>div:hover .v{color:#5eead4}
+
+.plan-option{cursor:pointer;display:flex!important;align-items:flex-start;gap:10px;transition:color .2s ease}
+.plan-option .radio{width:14px;height:14px;border-radius:50%;border:2px solid var(--border-strong);flex-shrink:0;margin-top:3px;transition:border-color .2s ease,background .2s ease}
+.plan-option.is-selected{color:var(--text)}
+.plan-option.is-selected .radio{border-color:var(--cyan);background:var(--cyan)}
+.plan-option:hover .radio{border-color:var(--cyan)}
+.plan-result{margin-top:16px;padding:12px 14px;background:var(--cyan-soft);border:1px solid rgba(34,211,238,.3);border-radius:9px;font-size:.85rem;color:var(--text-dim);transition:opacity .15s ease}
+.plan-result b{color:var(--cyan)}
+
+/* ============ REVEAL ============ */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.is-visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container">
+    <a href="#" class="nav__logo">
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#06141a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      Resolve
+    </a>
+    <div class="nav__links">
+      <a href="#solution">How it Works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#team">Team</a>
+    </div>
+    <div class="nav__right">
+      <a href="#" class="nav__signin">Sign In</a>
+      <a href="#cta" class="btn btn-primary btn-sm">Get Demo</a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="nav__mobile" id="navMobile">
+    <a href="#solution">How it Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#team">Team</a>
+    <a href="#">Sign In</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="parallax-blob hero-glow" data-parallax="0.18"></div>
+  <div class="container hero__grid">
+    <div>
+      <span class="eyebrow"><span class="dot dot--pulse"></span>Resolve Engine v1.0 · Live in Production</span>
+      <h1>Your support queue resolves <span class="cyan">itself.</span></h1>
+      <p class="lede">Resolve is the AI command center for B2B SaaS support teams. It reads your knowledge base, understands every incoming ticket, and automatically resolves 70%+ — sending only the hard cases to your team.</p>
+      <div class="trust-row">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Powered by AWS Bedrock</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>NVIDIA NIM Inference</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>SOC 2 Compliant</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>GDPR Ready</span>
+      </div>
+      <form class="hero-form" id="heroForm">
+        <input type="email" placeholder="Work email address" required aria-label="Work email address" id="heroEmail">
+        <button type="submit" class="btn btn-primary">Get Early Access →</button>
+      </form>
+      <p class="fine-print" id="heroFinePrint">Free 30-day trial · No credit card required · Setup in 15 minutes</p>
+    </div>
+    <div class="hero-side reveal">
+      <div class="confidence-card" id="confidenceCard">
+        <div class="confidence-card__head">
+          <span class="label">Live AI Confidence</span>
+          <span class="live">Live</span>
+        </div>
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 200 110" width="200" height="110">
+            <path d="M10,100 A90,90 0 0 1 190,100" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="14" stroke-linecap="round"/>
+            <path id="confArc" d="M10,100 A90,90 0 0 1 190,100" fill="none" stroke="#22d3ee" stroke-width="14" stroke-linecap="round" stroke-dasharray="282.74 282.74" stroke-dashoffset="8.5"/>
+          </svg>
+          <div class="gauge-value"><span class="pct" id="confPct">97%</span><span class="pct-label">Confidence</span></div>
+        </div>
+        <p class="confidence-ticket" id="confTicket">TKT-4821 · How do I export my data?</p>
+        <div class="confidence-status"><span class="status-pill status-pill--auto" id="confPill">✓ Auto-Resolving</span></div>
+        <div class="confidence-card__foot" id="confDots">
+          <button class="conf-dot active" aria-label="Show ticket 1" data-i="0"></button>
+          <button class="conf-dot" aria-label="Show ticket 2" data-i="1"></button>
+          <button class="conf-dot" aria-label="Show ticket 3" data-i="2"></button>
+          <button class="conf-dot" aria-label="Show ticket 4" data-i="3"></button>
+          <button class="conf-dot" aria-label="Show ticket 5" data-i="4"></button>
+        </div>
+      </div>
+      <div class="stat-panel">
+        <div class="stat-card"><div class="label">Tickets Today</div><div class="value">1,247</div><div class="delta">+18% vs last week</div></div>
+        <div class="stat-card"><div class="label">Auto-Resolved</div><div class="value">71%</div><div class="delta">+4pp vs last week</div></div>
+        <div class="stat-card"><div class="label">Avg Response</div><div class="value">1.2s</div><div class="delta">-89% vs baseline</div></div>
+        <div class="stat-card"><div class="label">Escalations</div><div class="value">29</div><div class="delta">-62% vs last week</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOGOS ============ -->
+<section class="logos">
+  <div class="container">
+    <p>Trusted by fast-growing B2B SaaS teams</p>
+    <div class="logos__row">
+      <span>Acme Corp</span><span>DataStack</span><span>TechFlow</span><span>FinCore</span><span>GrowthCo</span><span>CloudScale</span><span>NexusHQ</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section class="section" id="problem">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--red">⚠ The Problem</span>
+      <h2>Your support team is <span class="red">burning $847,000 a year</span> answering the same 40 questions.</h2>
+      <p class="lede" style="margin:18px auto 0">Analysis of 50M+ support tickets shows that 67% are identical to questions already answered in your docs or a previous ticket. Human agents are copy-pasting answers, and your customers are still waiting 8+ hours.</p>
+    </div>
+
+    <div class="problem__grid reveal">
+      <div class="inbox">
+        <div class="inbox__head">
+          <span class="title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18v14H3z"/><path d="M3 5l9 7 9-7"/></svg>Support Inbox</span>
+          <span class="unread" data-base="75">75 unread</span>
+        </div>
+        <div class="inbox__cols"><span>Ticket</span><span>Waiting</span></div>
+        <div class="inbox__list">
+          <div class="ticket-row">
+            <div class="ticket-row__top"><div><span class="id">TKT-1042</span><span class="desc">How do I export my data?</span></div><span class="wait">14h<span class="chev">⌄</span></span></div>
+            <div class="ticket-row__detail"><p class="msg">"I need to export all our contact records before next week's compliance audit. Is there a CSV export option, or do I need API access?"</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+          </div>
+          <div class="ticket-row">
+            <div class="ticket-row__top"><div><span class="id">TKT-1041</span><span class="desc">Forgot password — login broken</span></div><span class="wait">13h<span class="chev">⌄</span></span></div>
+            <div class="ticket-row__detail"><p class="msg">"I've tried resetting my password three times now but the reset email never arrives. Can someone manually unlock my account?"</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+          </div>
+          <div class="ticket-row">
+            <div class="ticket-row__top"><div><span class="id">TKT-1040</span><span class="desc">What's the difference between plans?</span></div><span class="wait">11h<span class="chev">⌄</span></span></div>
+            <div class="ticket-row__detail"><p class="msg">"We're deciding between Growth and Enterprise. Besides price, what actually changes — seats, support, SSO?"</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+          </div>
+          <div class="ticket-row">
+            <div class="ticket-row__top"><div><span class="id">TKT-1039</span><span class="desc">Can I add a team member?</span></div><span class="wait">9h<span class="chev">⌄</span></span></div>
+            <div class="ticket-row__detail"><p class="msg">"I want to add two more teammates to our workspace this week. Where do I do that, and does it change our billing?"</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+          </div>
+          <div class="ticket-row">
+            <div class="ticket-row__top"><div><span class="id">TKT-1038</span><span class="desc">Invoice shows wrong amount</span></div><span class="wait">7h<span class="chev">⌄</span></span></div>
+            <div class="ticket-row__detail"><p class="msg">"This month's invoice is $80 higher than usual and I can't see why. Could someone check it against our plan?"</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+          </div>
+          <div class="ticket-row">
+            <div class="ticket-row__top"><div><span class="id">TKT-1037</span><span class="desc">How do webhooks work?</span></div><span class="wait">5h<span class="chev">⌄</span></span></div>
+            <div class="ticket-row__detail"><p class="msg">"Is there any documentation on setting up webhooks for ticket status changes? Couldn't find it in the help center."</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+          </div>
+        </div>
+        <div class="inbox__foot"><span class="k">Avg wait time</span><span class="v">8.5 hrs</span></div>
+      </div>
+
+
+      <div class="metric-stack">
+        <div class="metric-card">
+          <div class="icon icon--red">$</div>
+          <div><div class="big">$847,000</div><div class="ttl">Annual cost of repetitive ticket answering</div><div class="desc">Based on 16-agent team at $52K/agent. 67% of effort is avoidable.</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="icon icon--amber">⏱</div>
+          <div><div class="big">8.5 hrs</div><div class="ttl">Average first response time — B2B SaaS</div><div class="desc">Customers expect responses in under 30 minutes. You're losing contracts.</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="icon icon--red">↻</div>
+          <div><div class="big">67%</div><div class="ttl">Of tickets are questions already in your docs</div><div class="desc">Your knowledge base has the answer. The AI just needs to find and send it.</div></div>
+        </div>
+        <div class="metric-card">
+          <div class="icon icon--amber">↗</div>
+          <div><div class="big">3×</div><div class="ttl">Ticket volume growth per funding round</div><div class="desc">You hire 1.4x more agents. The gap widens every quarter.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card reveal">
+      <div class="chart-card__head">
+        <span class="ttl">Ticket Volume vs. Human Capacity — Last 14 Days</span>
+        <span class="tag">Gap is growing →</span>
+      </div>
+      <div class="chart-interactive" id="ticketChartWrap">
+        <div class="chart-tooltip" id="chartTooltip"></div>
+        <svg id="ticketChartSvg" viewBox="0 0 1000 280" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="redFade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f3645b" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#f3645b" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="40" y1="20" x2="40" y2="240" stroke="rgba(255,255,255,.1)"/>
+          <line x1="40" y1="240" x2="980" y2="240" stroke="rgba(255,255,255,.1)"/>
+          <text x="0" y="24" fill="#5e6b80" font-size="13" font-family="monospace">260</text>
+          <text x="0" y="84" fill="#5e6b80" font-size="13" font-family="monospace">195</text>
+          <text x="0" y="144" fill="#5e6b80" font-size="13" font-family="monospace">130</text>
+          <text x="8" y="204" fill="#5e6b80" font-size="13" font-family="monospace">65</text>
+          <text x="20" y="244" fill="#5e6b80" font-size="13" font-family="monospace">0</text>
+          <path d="M40,156 L108,135 L176,118 L244,119 L312,135 L380,153 L448,151 L516,135 L584,103 L652,68 L720,32 L788,16 L856,12 L924,12 L924,240 L40,240 Z" fill="url(#redFade)"/>
+          <path d="M40,156 L108,135 L176,118 L244,119 L312,135 L380,153 L448,151 L516,135 L584,103 L652,68 L720,32 L788,16 L856,12 L924,12" fill="none" stroke="#f3645b" stroke-width="2.5"/>
+          <path d="M40,212 L108,210 L176,209 L244,208 L312,206 L380,206 L448,203 L516,203 L584,200 L652,200 L720,197 L788,197 L856,194 L924,194" fill="none" stroke="#a78bfa" stroke-width="2.5"/>
+          <g font-family="monospace" font-size="12" fill="#5e6b80">
+            <text x="36" y="262">D1</text><text x="103" y="262">D2</text><text x="171" y="262">D3</text><text x="239" y="262">D4</text>
+            <text x="307" y="262">D5</text><text x="375" y="262">D6</text><text x="443" y="262">D7</text><text x="511" y="262">D8</text>
+            <text x="579" y="262">D9</text><text x="643" y="262">D10</text><text x="711" y="262">D11</text><text x="779" y="262">D12</text>
+            <text x="847" y="262">D13</text><text x="908" y="262">D14</text>
+          </g>
+          <line id="chartGuide" x1="40" y1="20" x2="40" y2="240" stroke="rgba(255,255,255,.25)" stroke-width="1" style="opacity:0;transition:opacity .15s ease"/>
+          <circle id="chartDotCapacity" cx="40" cy="212" r="5" fill="#a78bfa" stroke="#0a0d14" stroke-width="2" style="opacity:0;transition:opacity .15s ease"/>
+          <circle id="chartDotIncoming" cx="40" cy="156" r="5" fill="#f3645b" stroke="#0a0d14" stroke-width="2" style="opacity:0;transition:opacity .15s ease"/>
+          <rect id="chartOverlay" x="40" y="0" width="884" height="280" fill="transparent" pointer-events="all" style="cursor:crosshair"/>
+        </svg>
+      </div>
+      <div class="chart-legend">
+        <span><span class="sw" style="background:#f3645b"></span>Incoming tickets</span>
+        <span><span class="sw" style="background:#a78bfa"></span>Human capacity</span>
+      </div>
+      <p class="chart-hint">Hover or drag across the chart to see exact daily numbers.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ SOLUTION ============ -->
+<section class="section" id="solution">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--cyan">⚡ The Solution</span>
+      <h2>An AI agent that reads, reasons, and <span class="cyan">responds — autonomously.</span></h2>
+      <p class="lede" style="margin:18px auto 0">Resolve deploys a production-grade AI agent trained on your exact knowledge base. It uses Retrieval-Augmented Generation (RAG) to find the most relevant answer, then uses Claude 3.5 Sonnet to compose a precise, citation-backed reply — in under 2 seconds.</p>
+    </div>
+
+    <div class="compare reveal">
+      <div class="compare__col compare__col--bad">
+        <span class="tag">Without Resolve</span>
+        <div class="inbox">
+          <div class="inbox__head"><span class="title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18v14H3z"/><path d="M3 5l9 7 9-7"/></svg>Support Inbox</span><span class="unread" data-base="78">78 unread</span></div>
+          <div class="inbox__cols"><span>Ticket</span><span>Waiting</span></div>
+          <div class="inbox__list">
+            <div class="ticket-row">
+              <div class="ticket-row__top"><div><span class="id">TKT-1042</span><span class="desc">How do I export my data?</span></div><span class="wait">14h<span class="chev">⌄</span></span></div>
+              <div class="ticket-row__detail"><p class="msg">"I need to export all our contact records before next week's compliance audit. Is there a CSV export option, or do I need API access?"</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+            </div>
+            <div class="ticket-row">
+              <div class="ticket-row__top"><div><span class="id">TKT-1041</span><span class="desc">Forgot password — login broken</span></div><span class="wait">13h<span class="chev">⌄</span></span></div>
+              <div class="ticket-row__detail"><p class="msg">"I've tried resetting my password three times now but the reset email never arrives. Can someone manually unlock my account?"</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+            </div>
+            <div class="ticket-row">
+              <div class="ticket-row__top"><div><span class="id">TKT-1040</span><span class="desc">What's the difference between plans?</span></div><span class="wait">11h<span class="chev">⌄</span></span></div>
+              <div class="ticket-row__detail"><p class="msg">"We're deciding between Growth and Enterprise. Besides price, what actually changes — seats, support, SSO?"</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+            </div>
+            <div class="ticket-row">
+              <div class="ticket-row__top"><div><span class="id">TKT-1039</span><span class="desc">Can I add a team member?</span></div><span class="wait">9h<span class="chev">⌄</span></span></div>
+              <div class="ticket-row__detail"><p class="msg">"I want to add two more teammates to our workspace this week. Where do I do that, and does it change our billing?"</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+            </div>
+            <div class="ticket-row">
+              <div class="ticket-row__top"><div><span class="id">TKT-1038</span><span class="desc">Invoice shows wrong amount</span></div><span class="wait">7h<span class="chev">⌄</span></span></div>
+              <div class="ticket-row__detail"><p class="msg">"This month's invoice is $80 higher than usual and I can't see why. Could someone check it against our plan?"</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+            </div>
+            <div class="ticket-row">
+              <div class="ticket-row__top"><div><span class="id">TKT-1037</span><span class="desc">How do webhooks work?</span></div><span class="wait">5h<span class="chev">⌄</span></span></div>
+              <div class="ticket-row__detail"><p class="msg">"Is there any documentation on setting up webhooks for ticket status changes? Couldn't find it in the help center."</p><div class="detail-foot"><span class="waiting-tag">🕐 No response yet</span><button class="reply-btn" disabled>✎ Reply manually</button></div></div>
+            </div>
+          </div>
+          <div class="inbox__foot"><span class="k">Avg wait time</span><span class="v">8.5 hrs</span></div>
+        </div>
+      </div>
+      <div class="compare__col compare__col--good">
+        <span class="tag">With Resolve — Live AI Resolution</span>
+        <div class="engine">
+          <div class="engine__head"><span class="title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 7V5a3 3 0 016 0v2"/></svg>Resolve AI Engine</span><span class="live">Online</span></div>
+          <div class="engine__body">
+            <div class="chat-msgs" id="chatMsgs">
+              <div class="chat-msg chat-msg--ai">
+                <div class="bubble">Hi! Ask me anything a customer might ask — try a question below, or type your own.</div>
+              </div>
+            </div>
+            <div class="chat-suggest">
+              <button type="button" class="chip" data-q="How do I export my data?">Export my data</button>
+              <button type="button" class="chip" data-q="I forgot my password">Forgot password</button>
+              <button type="button" class="chip" data-q="What's your refund policy?">Refund policy</button>
+            </div>
+            <form class="chat-input-row" id="chatForm">
+              <input type="text" id="chatInput" placeholder="Type a customer question…" aria-label="Type a customer question" autocomplete="off">
+              <button type="submit" class="chat-send" aria-label="Send message">→</button>
+            </form>
+          </div>
+          <div class="engine__foot"><span class="k">Resolution time</span><span class="v" id="engineResTime">2.1 sec</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-grid reveal">
+      <div class="step-card flip-card" tabindex="0" role="button" aria-label="Knowledge Indexer, click for example">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg></div>
+            <div class="num">01</div>
+            <h3>Knowledge Indexer</h3>
+            <p>Resolve crawls your docs, past tickets, and uploaded PDFs. NVIDIA NIM converts every paragraph into a dense vector embedding — a mathematical fingerprint that captures semantic meaning, not just keywords.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">Worked example</div>
+            <div class="back-stat">2,847</div>
+            <p class="back-note">Chunks indexed from one mid-size help center — docs, changelog, and 14 months of resolved tickets, re-embedded automatically every night.</p>
+          </div>
+        </div>
+      </div>
+      <div class="step-card flip-card" tabindex="0" role="button" aria-label="Semantic Router, click for example">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+            <div class="num">02</div>
+            <h3>Semantic Router</h3>
+            <p>When a ticket arrives, the same NVIDIA NIM model embeds the customer's question. A GPU-accelerated vector search finds the top-5 most semantically similar docs — even if the phrasing is completely different. Keyword search misses 60% of these.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">Worked example</div>
+            <div class="back-stat">"cancel" ↔ "stop billing"</div>
+            <p class="back-note">Zero shared keywords, 0.91 cosine similarity. Keyword search would've missed this match entirely.</p>
+          </div>
+        </div>
+      </div>
+      <div class="step-card flip-card" tabindex="0" role="button" aria-label="Confidence-Gated Generator, click for example">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 110 20 10 10 0 010-20z"/><path d="M12 8v4l3 3"/></svg></div>
+            <div class="num">03</div>
+            <h3>Confidence-Gated Generator</h3>
+            <p>Claude 3.5 Sonnet (via AWS Bedrock) generates a response grounded in the retrieved docs. Our confidence scorer evaluates answer completeness, source quality, and semantic alignment. Only scores ≥95% are auto-sent. Lower scores draft for human review.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">Worked example</div>
+            <div class="back-stat">96% → auto-sent</div>
+            <p class="back-note">Same ticket scored 71% last month before a doc update — it would have gone to a human instead of guessing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ AI TECHNOLOGY ============ -->
+<section class="section" id="tech">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--cyan">⚙ AI Technology</span>
+      <h2>Not "AI-powered" — <span class="cyan">AI-native.</span></h2>
+      <p class="lede" style="margin:18px auto 0">Every component of Resolve was built ground-up for AI-native operation. No legacy code with AI bolted on.</p>
+    </div>
+
+    <div class="tech__grid reveal">
+      <div class="tech__col">
+        <div class="info-box">
+          <span class="ttl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/></svg>What Data the AI Uses</span>
+          <ul>
+            <li>Your knowledge base articles and help docs</li>
+            <li>Historical resolved tickets (learns from success)</li>
+            <li>Product changelog and release notes</li>
+            <li>Customer account context (plan, usage, history)</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <span class="ttl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>What the AI Predicts &amp; Generates</span>
+          <ul>
+            <li>Response quality confidence score (0–100%)</li>
+            <li>Escalation probability and recommended agent</li>
+            <li>Answer text, grounded in cited source documents</li>
+            <li>Knowledge gaps — questions no doc covers yet</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <span class="ttl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>Models &amp; Techniques Involved</span>
+          <ul>
+            <li>Claude 3.5 Sonnet (AWS Bedrock) — response generation</li>
+            <li>NVIDIA NIM text-embedding-3-large — semantic encoding</li>
+            <li>pgvector ANN search — sub-3ms retrieval at scale</li>
+            <li>Custom confidence classifier — trained on 2M labeled tickets</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <span class="ttl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M8 9V6a4 4 0 018 0v3"/></svg>Why GPU Inference Is Necessary</span>
+          <ul>
+            <li>CPU embedding: 890ms — too slow for real-time response</li>
+            <li>NVIDIA NIM GPU embedding: 12ms — invisible to customers</li>
+            <li>Parallel batch processing: 1,000+ tickets/sec during spikes</li>
+            <li>Vector search across 10M+ chunks: 3ms on GPU, 890ms on CPU</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tech__col">
+        <div class="rag-graph" id="ragGraphWrap">
+          <span class="label">RAG Pipeline — Neural Graph View <span class="rag-live">● live</span></span>
+          <div class="rag-graph__canvas">
+            <svg id="ragSvg" viewBox="0 0 640 240" preserveAspectRatio="none"></svg>
+            <div class="rag-tooltip" id="ragTooltip"></div>
+          </div>
+        </div>
+        <div class="rag-metrics">
+          <div class="m"><div class="v">12ms</div><div class="l">Embedding Latency</div><div class="s">NVIDIA NIM GPU</div></div>
+          <div class="m"><div class="v">3ms</div><div class="l">Vector Search</div><div class="s">pgvector + ANN</div></div>
+          <div class="m"><div class="v">890ms</div><div class="l">Generation</div><div class="s">Claude 3.5</div></div>
+        </div>
+        <div class="bar-chart" style="margin-top:18px">
+          <span class="label">AI Confidence Distribution — Production Data</span>
+          <div class="bar-chart__bars" id="confBars">
+            <div class="bar-wrap" data-pct="68" data-count="848" tabindex="0" role="button" aria-label="90 to 100 percent confidence, 68 percent of tickets"><div class="bar" style="height:85%;background:#22d3ee"></div></div>
+            <div class="bar-wrap" data-pct="16" data-count="200" tabindex="0" role="button" aria-label="75 to 90 percent confidence, 16 percent of tickets"><div class="bar" style="height:20%;background:#f5a623"></div></div>
+            <div class="bar-wrap" data-pct="10" data-count="125" tabindex="0" role="button" aria-label="50 to 75 percent confidence, 10 percent of tickets"><div class="bar" style="height:12%;background:#f3964b"></div></div>
+            <div class="bar-wrap" data-pct="6" data-count="74" tabindex="0" role="button" aria-label="Less than 50 percent confidence, 6 percent of tickets"><div class="bar" style="height:7%;background:#f3645b"></div></div>
+          </div>
+          <div class="bar-chart__labels"><span>90–100%</span><span>75–90%</span><span>50–75%</span><span>&lt;50%</span></div>
+          <p class="caption">68% of tickets scored ≥90% confidence → auto-resolved. 7% escalated to human agents.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--cyan">▤ Product Features</span>
+      <h2>Everything your team needs. <span class="cyan">Nothing you don't.</span></h2>
+    </div>
+    <div class="feature-grid reveal">
+      <div class="feature-card flip-card" tabindex="0" role="button" aria-label="Autonomous AI Resolution, click for detail">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="icon-box icon-box--cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 7V5a3 3 0 016 0v2"/></svg></div>
+            <h3>Autonomous AI Resolution</h3>
+            <p>AI reads every ticket, retrieves the right context, and sends a complete answer — without human involvement. Target: 70%+ resolution rate.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">In production today</div>
+            <div class="back-stat">2.1 sec</div>
+            <p class="back-note">Average handle time, vs. 4hr+ for a human-only queue at the same volume.</p>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card flip-card" tabindex="0" role="button" aria-label="Confidence Gate, click for detail">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="icon-box icon-box--green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg></div>
+            <h3>Confidence Gate</h3>
+            <p>Every AI response is scored before sending. Responses below 95% confidence are held for human review with AI draft included. Zero false confidence.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">60-day production data</div>
+            <div class="back-stat">0 false sends</div>
+            <p class="back-note">Every answer below the confidence threshold gets held for human review — no exceptions.</p>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card flip-card" tabindex="0" role="button" aria-label="Knowledge Gap Detection, click for detail">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="icon-box icon-box--blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+            <h3>Knowledge Gap Detection</h3>
+            <p>Automatically surfaces the questions your AI couldn't answer confidently — ranked by frequency. Tells you exactly which docs to write next.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">One beta customer</div>
+            <div class="back-stat">34 new docs</div>
+            <p class="back-note">Written directly from gap reports in their first week on Resolve.</p>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card flip-card" tabindex="0" role="button" aria-label="Real-Time Analytics, click for detail">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="icon-box icon-box--amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
+            <h3>Real-Time Analytics</h3>
+            <p>Live dashboard showing resolution rate, escalation trends, topic distribution, and confidence scores. Built for support leads who need data, not noise.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">Refresh rate</div>
+            <div class="back-stat">Live</div>
+            <p class="back-note">No exports, no waiting on BI — every chart updates as tickets resolve.</p>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card flip-card" tabindex="0" role="button" aria-label="Smart Escalation Rules, click for detail">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="icon-box icon-box--purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div>
+            <h3>Smart Escalation Rules</h3>
+            <p>Define escalation triggers by confidence threshold, business hours, sentiment score, or keyword match. Escalations arrive pre-summarized for your agents.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">Typical setup time</div>
+            <div class="back-stat">~5 min</div>
+            <p class="back-note">Most teams configure their first rule set in a single sitting.</p>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card flip-card" tabindex="0" role="button" aria-label="Omnichannel Ingestion, click for detail">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="icon-box icon-box--cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></div>
+            <h3>Omnichannel Ingestion</h3>
+            <p>One AI engine for your chat widget, email inbox, Zendesk, Intercom, and HubSpot. Consistent resolution quality across every channel your customers use.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">Channels unified</div>
+            <div class="back-stat">5</div>
+            <p class="back-note">Widget, email, Zendesk, Intercom, HubSpot — one brain behind all of them.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIVE PRODUCT PREVIEW ============ -->
+<section class="section" id="preview">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--cyan"><span class="dot dot--pulse"></span>Live Product Preview</span>
+      <h2>See the dashboard. <span class="cyan">Watch it work in real time.</span></h2>
+    </div>
+
+    <div class="browser-mock reveal">
+      <div class="browser-mock__bar">
+        <div class="browser-mock__dots"><span style="background:#f3645b"></span><span style="background:#f5a623"></span><span style="background:#2dd581"></span></div>
+        <span class="browser-mock__url">app.resolve.ai/dashboard</span>
+      </div>
+      <div class="dash">
+        <div class="dash__sidebar">
+          <div class="brand"><span class="mark"></span>Resolve</div>
+          <div class="dash__nav-item active">◈ Dashboard</div>
+          <div class="dash__nav-item">◉ Conversations</div>
+          <div class="dash__nav-item">◎ Knowledge</div>
+          <div class="dash__nav-item">◐ Analytics</div>
+        </div>
+        <div class="dash__main">
+          <div class="dash__stats">
+            <div class="dash__stat"><div class="label">Auto-Resolved</div><div class="value">71%</div><div class="delta">+4pp</div></div>
+            <div class="dash__stat"><div class="label">Avg Confidence</div><div class="value">94%</div><div class="delta">+2pp</div></div>
+            <div class="dash__stat"><div class="label">Open Tickets</div><div class="value">12</div><div class="delta">-38%</div></div>
+            <div class="dash__stat"><div class="label">Avg Response</div><div class="value">1.2s</div><div class="delta">-89%</div></div>
+          </div>
+          <span class="dash__chart-label">Conversation Volume — 14 Days</span>
+          <div class="mini-chart-wrap" id="convoChartWrap">
+            <div class="chart-tooltip" id="convoTooltip"></div>
+            <svg id="convoChartSvg" viewBox="0 0 600 90" preserveAspectRatio="none" style="width:100%;height:auto">
+              <defs><linearGradient id="cyanFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22d3ee" stop-opacity=".3"/><stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0,70 L46,66 L92,62 L138,55 L184,52 L230,44 L276,40 L322,30 L368,26 L414,20 L460,14 L506,10 L552,8 L600,8 L600,90 L0,90 Z" fill="url(#cyanFade)"/>
+              <path d="M0,70 L46,66 L92,62 L138,55 L184,52 L230,44 L276,40 L322,30 L368,26 L414,20 L460,14 L506,10 L552,8 L600,8" fill="none" stroke="#22d3ee" stroke-width="2.5"/>
+              <line id="convoGuide" x1="0" y1="0" x2="0" y2="90" stroke="rgba(255,255,255,.25)" stroke-width="1" style="opacity:0;transition:opacity .15s ease"/>
+              <circle id="convoDot" r="4" fill="#22d3ee" stroke="#0a0d14" stroke-width="2" style="opacity:0;transition:opacity .15s ease"/>
+              <rect id="convoOverlay" x="0" y="0" width="600" height="90" fill="transparent" pointer-events="all" style="cursor:crosshair"/>
+            </svg>
+          </div>
+          <div class="dash__rows">
+            <div class="row good"><span>4821 · How to export data?</span><span class="pct">97%</span></div>
+            <div class="row bad"><span>4820 · Billing dispute — charges wrong</span><span class="pct">41%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="preview__grid reveal">
+      <div class="stream">
+        <div class="stream__head"><span class="ttl">Live Ticket Resolution Stream</span><span class="proc">Processing</span></div>
+        <div class="stream-row">
+          <div class="stream-row__top"><span class="sdot sdot--ok"></span><span class="sid">TKT-4821</span><span class="sdesc">How do I export my data?</span><span class="spct spct--ok">97% ✓</span></div>
+          <div class="stream-row__detail">Resolved using: <b>Help Center › Exporting your data</b></div>
+        </div>
+        <div class="stream-row">
+          <div class="stream-row__top"><span class="sdot sdot--bad"></span><span class="sid">TKT-4820</span><span class="sdesc">Can't access account after reset</span><span class="spct spct--bad">41% ↑</span></div>
+          <div class="stream-row__detail">Escalated to: <b>Marcus, Tier-2 Support</b></div>
+        </div>
+        <div class="stream-row">
+          <div class="stream-row__top"><span class="sdot sdot--ok"></span><span class="sid">TKT-4819</span><span class="sdesc">Difference between Growth and Enterprise?</span><span class="spct spct--ok">99% ✓</span></div>
+          <div class="stream-row__detail">Resolved using: <b>Help Center › Plans &amp; Pricing</b></div>
+        </div>
+        <div class="stream-row">
+          <div class="stream-row__top"><span class="sdot sdot--ok"></span><span class="sid">TKT-4818</span><span class="sdesc">Refund for last month's invoice</span><span class="spct spct--ok">88% ✓</span></div>
+          <div class="stream-row__detail">Resolved using: <b>Policy › Refunds &amp; Cancellations</b></div>
+        </div>
+        <div class="stream-row">
+          <div class="stream-row__top"><span class="sdot sdot--ok"></span><span class="sid">TKT-4817</span><span class="sdesc">SAML SSO setup for our org</span><span class="spct spct--ok">95% ✓</span></div>
+          <div class="stream-row__detail">Resolved using: <b>Help Center › SSO Setup</b></div>
+        </div>
+      </div>
+      <div class="trend-card">
+        <span class="ttl">Resolution Rate Trend</span>
+        <div class="mini-chart-wrap" id="trendChartWrap">
+          <div class="chart-tooltip" id="trendTooltip"></div>
+          <svg id="trendChartSvg" viewBox="0 0 300 170" preserveAspectRatio="none" style="width:100%;height:auto">
+            <path d="M0,60 L30,52 L60,46 L90,42 L120,44 L150,32 L180,26 L210,20 L240,12 L270,8 L300,6" fill="none" stroke="#22d3ee" stroke-width="2.5"/>
+            <path d="M0,128 L30,127 L60,126 L90,126 L120,125 L150,125 L180,123 L210,123 L240,121 L270,116 L300,118" fill="none" stroke="#f3645b" stroke-width="2" stroke-dasharray="5 4"/>
+            <line id="trendGuide" x1="0" y1="0" x2="0" y2="170" stroke="rgba(255,255,255,.25)" stroke-width="1" style="opacity:0;transition:opacity .15s ease"/>
+            <circle id="trendDotA" r="4" fill="#22d3ee" stroke="#0a0d14" stroke-width="2" style="opacity:0;transition:opacity .15s ease"/>
+            <circle id="trendDotB" r="4" fill="#f3645b" stroke="#0a0d14" stroke-width="2" style="opacity:0;transition:opacity .15s ease"/>
+            <rect id="trendOverlay" x="0" y="0" width="300" height="170" fill="transparent" pointer-events="all" style="cursor:crosshair"/>
+          </svg>
+        </div>
+        <div class="chart-legend" style="margin-top:6px">
+          <span><span class="sw" style="background:#22d3ee"></span>With Resolve</span>
+          <span><span class="sw" style="background:#f3645b"></span>Before</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="big-stats reveal">
+      <div><div class="v">618,666+</div><div class="l">Tickets resolved</div><div class="s">across all beta customers</div></div>
+      <div><div class="v">18%</div><div class="l">Auto-resolution rate</div><div class="s">industry average is 18%</div></div>
+      <div><div class="v">22%</div><div class="l">CSAT score</div><div class="s">vs 74% human-only teams</div></div>
+      <div><div class="v">309ms</div><div class="l">Avg AI response time</div><div class="s">down from 8.5 hours</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY NOW ============ -->
+<section class="section" id="why-now" style="position:relative;overflow:hidden">
+  <div class="parallax-blob whynow-glow" data-parallax="0.12"></div>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--amber">⚡ Why Now?</span>
+      <h2>Four forces converged. <span class="amber">The window is now.</span></h2>
+    </div>
+    <div class="why-grid reveal">
+      <div class="why-card flip-card" tabindex="0" role="button" aria-label="LLMs crossed the accuracy threshold, click for detail">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front"><div class="num">01</div><h3>LLMs crossed the accuracy threshold</h3><p>Claude 3.5 Sonnet achieves &lt;2% hallucination rate on factual Q&amp;A tasks with RAG grounding — low enough to auto-send responses in production. This was impossible before 2024. The model capability finally matches the use case.</p><span class="flip-affordance">+</span></div>
+          <div class="flip-face flip-face--back"><div class="back-tag">Hallucination rate</div><div class="back-stat">&lt;2%</div><p class="back-note">Below the ~5% threshold most enterprise buyers require before allowing auto-send.</p></div>
+        </div>
+      </div>
+      <div class="why-card flip-card" tabindex="0" role="button" aria-label="NVIDIA NIM made inference affordable, click for detail">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front"><div class="num">02</div><h3>NVIDIA NIM made inference affordable</h3><p>NVIDIA NIM microservices dropped the cost of GPU-accelerated embedding by 10×. Real-time semantic search — which was a $50K/month infrastructure project 18 months ago — now runs for cents per 1,000 tickets.</p><span class="flip-affordance">+</span></div>
+          <div class="flip-face flip-face--back"><div class="back-tag">Inference cost</div><div class="back-stat">10× cheaper</div><p class="back-note">$50K/month infrastructure now costs cents per 1,000 tickets processed.</p></div>
+        </div>
+      </div>
+      <div class="why-card flip-card" tabindex="0" role="button" aria-label="Customer expectations shifted permanently, click for detail">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front"><div class="num">03</div><h3>Customer expectations shifted permanently</h3><p>Post-ChatGPT, customers expect instant, intelligent answers. The bar for 'good support' moved from 4-hour responses to 2-minute responses. Companies that don't adapt are losing retention to competitors who do.</p><span class="flip-affordance">+</span></div>
+          <div class="flip-face flip-face--back"><div class="back-tag">New baseline</div><div class="back-stat">4hrs → 2min</div><p class="back-note">The expectation shift customers won't say out loud — they just leave instead.</p></div>
+        </div>
+      </div>
+      <div class="why-card flip-card" tabindex="0" role="button" aria-label="B2B SaaS ticket volume is exploding, click for detail">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front"><div class="num">04</div><h3>B2B SaaS ticket volume is exploding</h3><p>The average B2B SaaS company's support volume grew 3.2× between 2020 and 2024 as products expanded and international markets opened. Hiring alone cannot keep up — the only sustainable path is AI-first automation.</p><span class="flip-affordance">+</span></div>
+          <div class="flip-face flip-face--back"><div class="back-tag">2020 → 2024</div><div class="back-stat">3.2× growth</div><p class="back-note">Headcount can't scale linearly with that curve — automation has to close the gap.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TECH & INFRASTRUCTURE ============ -->
+<section class="section" id="infra">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--cyan">☁ Technology &amp; Infrastructure</span>
+      <h2>Enterprise infrastructure. <span class="cyan">Zero ops overhead.</span></h2>
+      <p class="lede" style="margin:18px auto 0">Every Resolve deployment runs on AWS with NVIDIA inference — giving you Fortune 500 infrastructure without the headcount or complexity.</p>
+    </div>
+
+    <div class="reveal">
+      <span class="pill-tag">⚡ How We Use AWS</span>
+      <div class="infra-banner"><p>We use AWS to host our backend APIs, store conversation data securely (AES-256 at rest), run AI workflows via Amazon Bedrock, manage authentication, deploy scalable serverless databases (Aurora), serve widget assets globally via CloudFront, monitor performance with CloudWatch, and process events at scale using Lambda and SQS.</p></div>
+      <div class="infra-grid">
+        <div class="infra-card flip-card" tabindex="0" role="button" aria-label="Amazon Bedrock, click for detail">
+          <div class="flip-stack">
+            <div class="flip-face flip-face--front"><div class="ico">⚡</div><h4>Amazon Bedrock</h4><p>Claude 3.5 Sonnet on fully managed API. No GPU ops, instant scale.</p><span class="flip-affordance">+</span></div>
+            <div class="flip-face flip-face--back"><div class="back-tag">Billing model</div><div class="back-stat">Pay-per-token</div><p class="back-note">No provisioning — scales with ticket volume automatically.</p></div>
+          </div>
+        </div>
+        <div class="infra-card flip-card" tabindex="0" role="button" aria-label="Amazon Aurora pgvector, click for detail">
+          <div class="flip-stack">
+            <div class="flip-face flip-face--front"><div class="ico">▤</div><h4>Amazon Aurora (pgvector)</h4><p>Serverless Postgres with native vector search for embedding storage.</p><span class="flip-affordance">+</span></div>
+            <div class="flip-face flip-face--back"><div class="back-tag">Query latency</div><div class="back-stat">&lt;3ms</div><p class="back-note">Vector + relational data in one engine — no separate vector DB to manage.</p></div>
+          </div>
+        </div>
+        <div class="infra-card flip-card" tabindex="0" role="button" aria-label="Amazon S3, click for detail">
+          <div class="flip-stack">
+            <div class="flip-face flip-face--front"><div class="ico">▦</div><h4>Amazon S3</h4><p>Document storage for knowledge base uploads, exports, and audit logs.</p><span class="flip-affordance">+</span></div>
+            <div class="flip-face flip-face--back"><div class="back-tag">Durability</div><div class="back-stat">11 nines</div><p class="back-note">Every uploaded doc and audit log, versioned and recoverable.</p></div>
+          </div>
+        </div>
+        <div class="infra-card flip-card" tabindex="0" role="button" aria-label="AWS Lambda, click for detail">
+          <div class="flip-stack">
+            <div class="flip-face flip-face--front"><div class="ico">λ</div><h4>AWS Lambda</h4><p>Event-driven ticket ingestion and webhook delivery at any scale.</p><span class="flip-affordance">+</span></div>
+            <div class="flip-face flip-face--back"><div class="back-tag">Cold start</div><div class="back-stat">&lt;200ms</div><p class="back-note">Scales from 0 to thousands of concurrent events with no servers to manage.</p></div>
+          </div>
+        </div>
+        <div class="infra-card flip-card" tabindex="0" role="button" aria-label="Amazon CloudFront, click for detail">
+          <div class="flip-stack">
+            <div class="flip-face flip-face--front"><div class="ico">◯</div><h4>Amazon CloudFront</h4><p>Global CDN for widget delivery with &lt;20ms P99 latency worldwide.</p><span class="flip-affordance">+</span></div>
+            <div class="flip-face flip-face--back"><div class="back-tag">P99 latency</div><div class="back-stat">&lt;20ms</div><p class="back-note">Widget loads fast on every continent, not just us-east-1.</p></div>
+          </div>
+        </div>
+        <div class="infra-card flip-card" tabindex="0" role="button" aria-label="AWS KMS and CloudWatch, click for detail">
+          <div class="flip-stack">
+            <div class="flip-face flip-face--front"><div class="ico">🔒</div><h4>AWS KMS + CloudWatch</h4><p>Encryption at rest for all conversation data. Full audit trail.</p><span class="flip-affordance">+</span></div>
+            <div class="flip-face flip-face--back"><div class="back-tag">Audit coverage</div><div class="back-stat">100%</div><p class="back-note">Every read/write logged — the backbone of our SOC 2 effort.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <span class="pill-tag">🚀 How We Use NVIDIA</span>
+      <div class="infra-banner"><p>NVIDIA NIM microservices handle real-time embedding at GPU speed — 12ms vs. 890ms on CPU. Triton serves parallel inference during spikes. NeMo fine-tunes our embedding models on support corpora. CUDA-accelerated ANN search retrieves from 10M+ chunks in under 3ms.</p></div>
+      <div class="infra-grid">
+        <div class="infra-card nvidia flip-card" tabindex="0" role="button" aria-label="NVIDIA NIM Microservices, click for detail">
+          <div class="flip-stack">
+            <div class="flip-face flip-face--front"><div class="ico">🚀</div><h4>NVIDIA NIM Microservices</h4><p>Production inference endpoints for embedding models — 3× faster than CPU-based alternatives. Powers our real-time semantic search.</p><span class="flip-affordance">+</span></div>
+            <div class="flip-face flip-face--back"><div class="back-tag">vs. CPU inference</div><div class="back-stat">3× faster</div><p class="back-note">The difference between a 12ms and 890ms embedding step, at scale.</p></div>
+          </div>
+        </div>
+        <div class="infra-card nvidia flip-card" tabindex="0" role="button" aria-label="NVIDIA NeMo Framework, click for detail">
+          <div class="flip-stack">
+            <div class="flip-face flip-face--front"><div class="ico">🧠</div><h4>NVIDIA NeMo Framework</h4><p>Framework we use for domain-specific fine-tuning of embedding models on customer support corpora.</p><span class="flip-affordance">+</span></div>
+            <div class="flip-face flip-face--back"><div class="back-tag">Training data</div><div class="back-stat">2M+ tickets</div><p class="back-note">Domain-specific embeddings beat generic ones on support language.</p></div>
+          </div>
+        </div>
+        <div class="infra-card nvidia flip-card" tabindex="0" role="button" aria-label="NVIDIA Triton Inference Server, click for detail">
+          <div class="flip-stack">
+            <div class="flip-face flip-face--front"><div class="ico">⚙</div><h4>NVIDIA Triton Inference Server</h4><p>High-throughput model server that handles parallel embedding requests during traffic spikes without queue buildup.</p><span class="flip-affordance">+</span></div>
+            <div class="flip-face flip-face--back"><div class="back-tag">Sustained throughput</div><div class="back-stat">1,000+ req/sec</div><p class="back-note">No queue buildup even during product-launch traffic spikes.</p></div>
+          </div>
+        </div>
+        <div class="infra-card nvidia flip-card" tabindex="0" role="button" aria-label="CUDA-Accelerated ANN Search, click for detail">
+          <div class="flip-stack">
+            <div class="flip-face flip-face--front"><div class="ico">💡</div><h4>CUDA-Accelerated ANN Search</h4><p>GPU-accelerated approximate nearest-neighbor search across 10M+ document chunks in under 3ms.</p><span class="flip-affordance">+</span></div>
+            <div class="flip-face flip-face--back"><div class="back-tag">Index size</div><div class="back-stat">10M+ chunks</div><p class="back-note">The same search a CPU index would take ~900ms to run.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARKET OPPORTUNITY ============ -->
+<section class="section" id="market">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--cyan">🌐 Market Opportunity</span>
+      <h2>A $21B market, ripe for <span class="cyan">AI disruption.</span></h2>
+    </div>
+
+    <div class="funnel-grid reveal">
+      <div class="funnel-card flip-card" tabindex="0" role="button" aria-label="Total Addressable Market, click for methodology">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="k">TAM</div><div class="k2">Total Addressable Market</div><div class="v">$21B</div><p>Global customer support software market (Gartner, 2024). Growing at 14% CAGR as digital-first businesses scale globally.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">Methodology</div>
+            <div class="back-stat">14% CAGR</div>
+            <p class="back-note">Gartner's global support-software spend estimate, projected forward at category growth rate. Includes legacy helpdesk tools, not just AI-native entrants.</p>
+          </div>
+        </div>
+      </div>
+      <div class="funnel-card flip-card" tabindex="0" role="button" aria-label="Serviceable Addressable Market, click for methodology">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="k">SAM</div><div class="k2">Serviceable Addressable Market</div><div class="v">$4.2B</div><p>B2B SaaS companies with 10–500 agents, using at least one support platform (Zendesk, Intercom, Freshdesk, HubSpot).</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">Methodology</div>
+            <div class="back-stat">~38,000 companies</div>
+            <p class="back-note">Estimated count of B2B SaaS companies in this size band with an existing helpdesk subscription, multiplied by average annual support-tooling spend.</p>
+          </div>
+        </div>
+      </div>
+      <div class="funnel-card flip-card" tabindex="0" role="button" aria-label="3-Year Target, click for methodology">
+        <div class="flip-stack">
+          <div class="flip-face flip-face--front">
+            <div class="k">SOM</div><div class="k2">3-Year Target</div><div class="v">$840M</div><p>AI-native support platforms in English-first markets: US, UK, Canada, Australia, and Western Europe.</p>
+            <span class="flip-affordance">+</span>
+          </div>
+          <div class="flip-face flip-face--back">
+            <div class="back-tag">Methodology</div>
+            <div class="back-stat">20% of SAM</div>
+            <p class="back-note">Assumes Resolve and early AI-native competitors jointly capture a fifth of SAM within 3 years, in line with category-creation adoption curves.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="market-cols reveal" id="pricing">
+      <div class="market-col">
+        <div class="ttl">Target Users</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>VP of Support / Head of CX</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Support Operations Managers</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>B2B SaaS founders pre-Series B</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Customer Success Leads</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>DevRel and developer support teams</li>
+        </ul>
+      </div>
+      <div class="market-col">
+        <div class="ttl">Revenue Model <span style="color:var(--text-faint);text-transform:none;letter-spacing:0">— click a plan</span></div>
+        <ul id="planList">
+          <li class="plan-option" data-plan="Starter" data-price="$149/mo" data-resolutions="1,000"><span class="radio"></span>Starter: $149/mo — up to 1,000 AI resolutions</li>
+          <li class="plan-option is-selected" data-plan="Growth" data-price="$449/mo" data-resolutions="5,000"><span class="radio"></span>Growth: $449/mo — up to 5,000 AI resolutions</li>
+          <li class="plan-option" data-plan="Enterprise" data-price="Custom" data-resolutions="unlimited"><span class="radio"></span>Enterprise: Custom — unlimited + SLA + VPC</li>
+          <li><span style="color:var(--cyan)">›</span>AI Credits: Pay-as-you-go for burst volume</li>
+          <li><span style="color:var(--cyan)">›</span>Premium Onboarding: $2,500 one-time setup fee</li>
+        </ul>
+        <div class="plan-result" id="planResult">Selected: <b>Growth</b> — $449/mo for up to 5,000 AI resolutions/month.</div>
+      </div>
+      <div class="market-col">
+        <div class="ttl">Launch Markets</div>
+        <ul>
+          <li><span class="flag">US</span>United States (primary)</li>
+          <li><span class="flag">GB</span>United Kingdom</li>
+          <li><span class="flag">CA</span>Canada</li>
+          <li><span class="flag">AU</span>Australia</li>
+          <li><span class="flag">DE</span>Germany (2025 Q4)</li>
+          <li><span class="flag">NG</span>Nigeria / West Africa (2026)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRACTION & MVP STATUS ============ -->
+<section class="section" id="traction">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--cyan">📈 Traction &amp; MVP Status</span>
+      <h2>We're not "coming soon." <span class="cyan">We're in production.</span></h2>
+      <p class="lede" style="margin:18px auto 0">Beta access is live. Twelve design partners are running Resolve in production today.</p>
+    </div>
+
+    <div class="traction-stats reveal">
+      <div class="card"><div class="v">200+</div><div class="l">Companies on waitlist</div><div class="s">Added in 6 weeks post-launch</div></div>
+      <div class="card"><div class="v">12</div><div class="l">Design partners in beta</div><div class="s">Running Resolve in production</div></div>
+      <div class="card"><div class="v">2.4M</div><div class="l">Tickets processed in beta</div><div class="s">71% auto-resolved</div></div>
+      <div class="card"><div class="v">$180K</div><div class="l">ARR pipeline (LOIs)</div><div class="s">Letters of intent signed</div></div>
+    </div>
+
+    <div class="traction-cols reveal">
+      <div class="traction-card">
+        <div class="ttl">MVP Status</div>
+        <div class="check-item"><span class="l-side"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Widget embed &amp; email ingestion</span></div>
+        <div class="check-item"><span class="l-side"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>RAG pipeline (NVIDIA NIM + Claude)</span></div>
+        <div class="check-item"><span class="l-side"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Confidence scoring engine</span></div>
+        <div class="check-item"><span class="l-side"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Escalation rules engine</span></div>
+        <div class="check-item"><span class="l-side"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Analytics dashboard</span></div>
+        <div class="check-item"><span class="l-side"><svg class="spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-9-9"/></svg>Zendesk connector (in beta)</span><span class="status-chip">In progress</span></div>
+      </div>
+      <div class="traction-card">
+        <div class="ttl">Beta Partner Results</div>
+        <div class="partner-result"><div class="partner-result__head"><b>DataStack</b><span class="pct">74% resolution rate</span></div><div class="progress"><span data-width="74"></span></div><p>Went from 8h → 1.4min avg response. 74% tickets auto-resolved.</p></div>
+        <div class="partner-result"><div class="partner-result__head"><b>TechFlow</b><span class="pct">68% resolution rate</span></div><div class="progress"><span data-width="68"></span></div><p>Reduced support headcount addition by 2 FTEs for Q4 2024.</p></div>
+        <div class="partner-result"><div class="partner-result__head"><b>FinCore</b><span class="pct">91% resolution rate</span></div><div class="progress"><span data-width="91"></span></div><p>CSAT improved from 71% → 91% after 45 days on Resolve.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT ROADMAP ============ -->
+<section class="section" id="roadmap">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--cyan">⑂ Product Roadmap</span>
+      <h2>Where we've been. <span class="cyan">Where we're going.</span></h2>
+      <p class="lede" style="margin:18px auto 0">Public roadmap — built from customer conversations and real support data. We ship every 6 weeks.</p>
+    </div>
+
+    <div class="timeline reveal">
+      <div class="timeline-item shipped">
+        <span class="ring"></span>
+        <div class="timeline-card">
+          <div class="timeline-card__head"><span class="tl-badge tl-badge--shipped">✓ Shipped</span><span class="tl-quarter">Q1 2025</span><h3>Foundation</h3></div>
+          <div class="tl-items"><div>Widget embed + email ingestion</div><div>RAG pipeline with NVIDIA NIM embeddings</div><div>Confidence scoring engine</div><div>Knowledge base sync</div></div>
+        </div>
+      </div>
+      <div class="timeline-item shipped">
+        <span class="ring"></span>
+        <div class="timeline-card">
+          <div class="timeline-card__head"><span class="tl-badge tl-badge--shipped">✓ Shipped</span><span class="tl-quarter">Q2 2025</span><h3>Intelligence Layer</h3></div>
+          <div class="tl-items"><div>Claude 3.5 Sonnet via AWS Bedrock</div><div>Escalation rules engine</div><div>Knowledge gap detection</div><div>Analytics dashboard v1</div></div>
+        </div>
+      </div>
+      <div class="timeline-item progress">
+        <span class="ring"></span>
+        <div class="timeline-card">
+          <div class="timeline-card__head"><span class="tl-badge tl-badge--progress">⚡ In Progress</span><span class="tl-quarter">Q3 2025</span><h3>Scale &amp; Integrations</h3></div>
+          <div class="tl-items"><div>Zendesk / Intercom / HubSpot connectors</div><div>18-language support</div><div>SAML SSO &amp; RBAC</div><div>Webhook API v2</div></div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="ring"></span>
+        <div class="timeline-card">
+          <div class="timeline-card__head"><span class="tl-badge tl-badge--planned">◦ Planned</span><span class="tl-quarter">Q4 2025</span><h3>Proactive AI</h3></div>
+          <div class="tl-items"><div>Predictive ticket deflection</div><div>Voice channel (Whisper ASR)</div><div>NVIDIA NIM custom fine-tuning</div><div>Sentiment-based routing</div></div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="ring"></span>
+        <div class="timeline-card">
+          <div class="timeline-card__head"><span class="tl-badge tl-badge--planned">◦ Planned</span><span class="tl-quarter">Q1 2026</span><h3>Enterprise Grade</h3></div>
+          <div class="tl-items"><div>VPC / on-premise deployment</div><div>Custom LLM fine-tuning on ticket history</div><div>SOC 2 Type II certification</div><div>99.99% SLA + dedicated infra</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section class="section" id="team">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--cyan">👥 The Team</span>
+      <h2>Built by people who <span class="cyan">lived this problem.</span></h2>
+      <p class="lede" style="margin:18px auto 0">Our team has scaled support operations at Intercom, Anthropic, Zendesk, and Freshworks. We know what breaks — and how to fix it.</p>
+    </div>
+
+    <div class="team-grid reveal">
+      <div class="team-card">
+        <div class="team-card__head"><div class="avatar">AC</div><div><h3>Aria Chen</h3><div class="role">CEO &amp; Co-founder</div></div></div>
+        <p>Former Principal PM at Intercom, led enterprise support product for 25,000+ companies. Stanford CS '17. Identified the AI resolution gap while managing a 40-person support team.</p>
+        <div class="tag-row"><span class="tag-chip">Product Strategy</span><span class="tag-chip">Enterprise SaaS</span><span class="tag-chip">Go-to-Market</span></div>
+      </div>
+      <div class="team-card">
+        <div class="team-card__head"><div class="avatar">DO</div><div><h3>Darius Okafor</h3><div class="role">CTO &amp; Co-founder</div></div></div>
+        <p>ML infrastructure lead at Anthropic for 3 years. PhD in NLP from Carnegie Mellon. Published researcher in RAG systems with 12 citations. Built the inference pipelines powering Claude.</p>
+        <div class="tag-row"><span class="tag-chip">LLM Inference</span><span class="tag-chip">RAG Systems</span><span class="tag-chip">NVIDIA CUDA</span></div>
+      </div>
+    </div>
+    <div class="team-foot reveal">
+      <p>Our full team includes ML engineers, a Head of Product, Head of Customer Success, and Infrastructure Engineers.</p>
+      <a href="#" class="btn btn-ghost">View all team members →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>What early customers say</h2>
+      <p class="lede" style="margin:18px auto 0">From teams who cut their support queue in under 30 days.</p>
+    </div>
+    <div class="testi-grid reveal">
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"We went from 8-hour response times to under 2 minutes. Our team now handles strategic conversations — not copy-paste answers. Resolve paid for itself in 11 days."</p><div class="who"><b>Sarah Chen</b><span>Head of Support, DataStack</span></div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"The confidence scoring is genuinely impressive. It knows exactly when to act and when to hand off. Zero false positives in 60 days of production use."</p><div class="who"><b>Marcus O.</b><span>CTO, FinCore</span></div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Resolve found 34 unanswered question categories in our docs within the first week. Our knowledge base has never been better. Our CSAT went from 71% to 91%."</p><div class="who"><b>Priya N.</b><span>VP Product, GrowthCo</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMPLIANCE ============ -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="compliance-head reveal">
+      <h3 style="font-size:1.5rem;font-weight:800">Built for enterprise compliance from day one</h3>
+      <p>We do not store PII beyond what is necessary for resolution. All data is encrypted in transit and at rest.</p>
+    </div>
+    <div class="compliance-grid reveal">
+      <div class="compliance-badge"><div class="ico" style="background:var(--cyan-soft);color:var(--cyan)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div><h4>SOC 2 Type II</h4><p>In progress (Q1 2026)</p></div>
+      <div class="compliance-badge"><div class="ico" style="background:var(--green-soft);color:var(--green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></svg></div><h4>GDPR Compliant</h4><p>EU data residency available</p></div>
+      <div class="compliance-badge"><div class="ico" style="background:rgba(96,165,250,.12);color:#60a5fa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/></svg></div><h4>AES-256 Encryption</h4><p>At rest and in transit</p></div>
+      <div class="compliance-badge"><div class="ico" style="background:var(--amber-soft);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div><h4>99.9% Uptime SLA</h4><p>Growth and Enterprise plans</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="section cta" id="cta" style="position:relative;overflow:hidden">
+  <div class="parallax-blob cta-glow" data-parallax="0.15"></div>
+  <div class="container">
+    <h2>Start resolving. <span class="cyan">Stop drowning.</span></h2>
+    <p class="lede">Join 200+ support teams already running on Resolve. Setup in 15 minutes. First 1,000 AI resolutions free.</p>
+    <form class="cta-form" id="ctaForm">
+      <input type="email" placeholder="Work email address" required aria-label="Work email address" id="ctaEmail">
+      <button type="submit" class="btn btn-primary">Get Access →</button>
+    </form>
+    <div class="cta-check">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Free 30-day trial</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>No credit card required</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Setup in 15 min</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>SOC 2 in progress</span>
+    </div>
+    <p class="cta-contact">Questions? Reach us directly.<br><a href="mailto:hello@resolve.ai">✉ hello@resolve.ai</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <div class="logo"><span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#06141a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Resolve</div>
+        <p>The AI command center for B2B SaaS support teams. Resolve tickets automatically, escalate intelligently.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Twitter"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0012 6.5v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/><path d="M10 9h4v2c1-1.5 2.5-2.5 4.5-2.5 3 0 5.5 2 5.5 6.5V21h-4v-5.5c0-2-1-3-2.5-3s-2.5 1-2.5 3V21h-4z"/></svg></a>
+          <a href="mailto:hello@resolve.ai" aria-label="Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+        </div>
+        <span class="email">hello@resolve.ai</span>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <ul><li><a href="#solution">How it Works</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#preview">Dashboard</a></li><li><a href="#cta">Get Early Access</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul><li><a href="#team">Our Team</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li><li><a href="mailto:hello@resolve.ai">Contact</a></li></ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2025 Resolve AI Ltd. All rights reserved.</span>
+      <span>SOC 2 Compliant · Built on AWS · NVIDIA Inference</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Mobile nav toggle
+const navToggle = document.getElementById('navToggle');
+const navMobile = document.getElementById('navMobile');
+navToggle.addEventListener('click', () => {
+  const open = navMobile.classList.toggle('is-open');
+  navToggle.setAttribute('aria-expanded', open);
+  navToggle.classList.toggle('is-open');
+});
+navMobile.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  navMobile.classList.remove('is-open');
+  navToggle.setAttribute('aria-expanded', 'false');
+}));
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => io.observe(el));
+} else {
+  revealEls.forEach(el => el.classList.add('is-visible'));
+}
+// Live AI Confidence widget
+const confTickets = [
+  { id: 'TKT-4821', desc: 'How do I export my data?', confidence: 97 },
+  { id: 'TKT-4820', desc: "Can't access account after reset", confidence: 41 },
+  { id: 'TKT-4819', desc: 'Difference between Growth and Enterprise?', confidence: 99 },
+  { id: 'TKT-4818', desc: "Refund for last month's invoice", confidence: 88 },
+  { id: 'TKT-4817', desc: 'SAML SSO setup for our org', confidence: 95 },
+];
+const ARC_LEN = 282.74;
+const confArc = document.getElementById('confArc');
+const confPct = document.getElementById('confPct');
+const confTicket = document.getElementById('confTicket');
+const confPill = document.getElementById('confPill');
+const confDots = document.querySelectorAll('#confDots .conf-dot');
+const confidenceCard = document.getElementById('confidenceCard');
+let confIndex = 0;
+let confTimer = null;
+
+function renderConf(i) {
+  const t = confTickets[i];
+  const offset = ARC_LEN * (1 - t.confidence / 100);
+  confArc.style.strokeDashoffset = offset;
+  confPct.textContent = t.confidence + '%';
+  confTicket.textContent = t.id + ' · ' + t.desc;
+
+  let color, pillClass, pillText;
+  if (t.confidence >= 85) { color = '#22d3ee'; pillClass = 'status-pill--auto'; pillText = '✓ Auto-Resolving'; }
+  else if (t.confidence >= 60) { color = '#f5a623'; pillClass = 'status-pill--human'; pillText = '↑ Needs Review'; }
+  else { color = '#f3645b'; pillClass = 'status-pill--escalate'; pillText = '↑ Routing to Human'; }
+
+  confArc.style.stroke = color;
+  confPct.style.color = color;
+  confPill.className = 'status-pill ' + pillClass;
+  confPill.textContent = pillText;
+  confDots.forEach((d, idx) => d.classList.toggle('active', idx === i));
+}
+function nextConf() {
+  confIndex = (confIndex + 1) % confTickets.length;
+  renderConf(confIndex);
+}
+function startConfTimer() {
+  stopConfTimer();
+  confTimer = setInterval(nextConf, 4000);
+}
+function stopConfTimer() {
+  if (confTimer) clearInterval(confTimer);
+}
+if (confidenceCard) {
+  renderConf(0);
+  startConfTimer();
+  confidenceCard.addEventListener('mouseenter', stopConfTimer);
+  confidenceCard.addEventListener('mouseleave', startConfTimer);
+  confDots.forEach((dot) => {
+    dot.addEventListener('click', () => {
+      confIndex = parseInt(dot.dataset.i, 10);
+      renderConf(confIndex);
+      startConfTimer();
+    });
+  });
+}
+
+
+// ============ INBOX INTERACTIVITY (click to expand + mark read) ============
+document.querySelectorAll('.inbox').forEach((inbox) => {
+  const unreadEl = inbox.querySelector('.unread');
+  if (!unreadEl) return;
+  const base = parseInt(unreadEl.dataset.base, 10) || 0;
+  function updateCount() {
+    const readCount = inbox.querySelectorAll('.ticket-row.is-read').length;
+    unreadEl.textContent = Math.max(base - readCount, 0) + ' unread';
+  }
+  inbox.querySelectorAll('.ticket-row').forEach((row) => {
+    const top = row.querySelector('.ticket-row__top');
+    if (!top) return;
+    top.setAttribute('tabindex', '0');
+    top.setAttribute('role', 'button');
+    top.setAttribute('aria-expanded', 'false');
+    function toggle() {
+      const open = row.classList.toggle('is-open');
+      if (open) row.classList.add('is-read');
+      top.setAttribute('aria-expanded', String(open));
+      updateCount();
+    }
+    top.addEventListener('click', toggle);
+    top.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+});
+
+// ============ TICKET VOLUME CHART (interactive hover) ============
+(function () {
+  const xs = [40, 108, 176, 244, 312, 380, 448, 516, 584, 652, 720, 788, 856, 924];
+  const incomingY = [156, 135, 118, 119, 135, 153, 151, 135, 103, 68, 32, 16, 12, 12];
+  const capacityY = [212, 210, 209, 208, 206, 206, 203, 203, 200, 200, 197, 197, 194, 194];
+  const incomingVals = [99, 124, 144, 143, 124, 103, 105, 124, 162, 203, 246, 265, 270, 270];
+  const capacityVals = [33, 35, 37, 38, 40, 40, 44, 44, 47, 47, 51, 51, 54, 54];
+  const dayLabels = ['D1','D2','D3','D4','D5','D6','D7','D8','D9','D10','D11','D12','D13','D14'];
+
+  const svg = document.getElementById('ticketChartSvg');
+  const overlay = document.getElementById('chartOverlay');
+  const guide = document.getElementById('chartGuide');
+  const dotIncoming = document.getElementById('chartDotIncoming');
+  const dotCapacity = document.getElementById('chartDotCapacity');
+  const tooltip = document.getElementById('chartTooltip');
+  if (!svg || !overlay) return;
+
+  function indexFromClientX(clientX) {
+    const rect = svg.getBoundingClientRect();
+    const scale = 1000 / rect.width;
+    let vbX = (clientX - rect.left) * scale;
+    vbX = Math.max(xs[0], Math.min(xs[xs.length - 1], vbX));
+    const step = xs[1] - xs[0];
+    let idx = Math.round((vbX - xs[0]) / step);
+    return Math.max(0, Math.min(xs.length - 1, idx));
+  }
+  function showAt(idx) {
+    const x = xs[idx];
+    guide.setAttribute('x1', x); guide.setAttribute('x2', x); guide.style.opacity = 1;
+    dotIncoming.setAttribute('cx', x); dotIncoming.setAttribute('cy', incomingY[idx]); dotIncoming.style.opacity = 1;
+    dotCapacity.setAttribute('cx', x); dotCapacity.setAttribute('cy', capacityY[idx]); dotCapacity.style.opacity = 1;
+    const gap = incomingVals[idx] - capacityVals[idx];
+    tooltip.innerHTML =
+      '<div class="ct-day">' + dayLabels[idx] + '</div>' +
+      '<div class="ct-row"><span class="ct-sw" style="background:#f3645b"></span>Incoming<b>' + incomingVals[idx] + '</b></div>' +
+      '<div class="ct-row"><span class="ct-sw" style="background:#a78bfa"></span>Capacity<b>' + capacityVals[idx] + '</b></div>' +
+      '<div class="ct-gap">Gap: +' + gap + '</div>';
+    tooltip.style.opacity = 1;
+    let pct = ((x - xs[0]) / (xs[xs.length - 1] - xs[0])) * 100;
+    tooltip.style.left = Math.max(12, Math.min(88, pct)) + '%';
+  }
+  function hide() {
+    guide.style.opacity = 0;
+    dotIncoming.style.opacity = 0;
+    dotCapacity.style.opacity = 0;
+    tooltip.style.opacity = 0;
+  }
+  overlay.addEventListener('mousemove', (e) => showAt(indexFromClientX(e.clientX)));
+  overlay.addEventListener('mouseleave', hide);
+  overlay.addEventListener('touchstart', (e) => showAt(indexFromClientX(e.touches[0].clientX)), { passive: true });
+  overlay.addEventListener('touchmove', (e) => showAt(indexFromClientX(e.touches[0].clientX)), { passive: true });
+})();
+
+// ============ "WITH RESOLVE" LIVE CHAT DEMO ============
+(function () {
+  const KB = [
+    { keys: ['export', 'csv', 'download my data', 'data export'], answer: "You can export everything as CSV from Settings → Data → Export. It packages contacts, tickets, and usage history into a download link sent to your email within a couple of minutes.", source: 'Help Center: Exporting your data', confidence: 97 },
+    { keys: ['password', 'reset', "can't log in", 'cant log in', 'locked out', 'login'], answer: "I've just sent a new password reset link to your account email — it should arrive within 2 minutes. If you still don't see it, check your spam folder for no-reply@resolve.ai.", source: 'Help Center: Resetting your password', confidence: 95 },
+    { keys: ['refund', 'money back', 'cancel my plan', 'cancellation'], answer: "We offer a full refund within 30 days of any charge, no questions asked. I can start that for your most recent invoice right now if you'd like — just confirm and I'll process it.", source: 'Policy: Refunds & cancellations', confidence: 92 },
+    { keys: ['plan', 'pricing', 'difference between', 'upgrade', 'enterprise', 'growth plan'], answer: "Growth ($449/mo) includes up to 5,000 AI resolutions, analytics, and Zendesk/Intercom integrations. Enterprise adds unlimited resolutions, SSO, a dedicated VPC, and a 99.99% SLA. Want the full comparison table emailed over?", source: 'Help Center: Plans & pricing', confidence: 96 },
+    { keys: ['team member', 'invite', 'seat', 'add user', 'add someone'], answer: "You can invite teammates from Settings → Team → Invite. Extra seats on Growth are $19/seat/month and take effect immediately — no re-onboarding needed.", source: 'Help Center: Managing your team', confidence: 94 },
+    { keys: ['invoice', 'billing', 'charge', 'wrong amount', 'overcharged'], answer: "I pulled up your latest invoice — the increase matches 3 seats added on the 14th, prorated for the rest of the cycle. I can email the full line-item breakdown if that helps.", source: 'Billing: Invoice details', confidence: 90 },
+    { keys: ['webhook', 'zapier', 'integration'], answer: "Webhooks fire on ticket.created, ticket.resolved, and ticket.escalated. Register an endpoint under Settings → Developers → Webhooks — every payload is signed with HMAC-SHA256 so you can verify it.", source: 'Docs: Webhooks API', confidence: 93 },
+    { keys: ['sso', 'saml', 'single sign-on'], answer: "SAML SSO is available on Growth and Enterprise. Drop your IdP metadata XML into Settings → Security → SSO and it's usually live within 10 minutes.", source: 'Help Center: SSO setup', confidence: 91 },
+    { keys: ['api', 'rate limit'], answer: "Our REST API allows 600 requests/min on Growth and 3,000/min on Enterprise, with burst headroom of 2x for 30 seconds. Full reference docs are linked from your dashboard's Developers tab.", source: 'Docs: API reference', confidence: 89 },
+  ];
+  const FALLBACK = { answer: "I don't have a confident match for that in the knowledge base, so rather than guess, I'm flagging it for a teammate instead of risking a wrong answer.", source: 'No matching source found', confidence: 38 };
+
+  function findAnswer(text) {
+    const t = text.toLowerCase();
+    for (const item of KB) { if (item.keys.some((k) => t.includes(k))) return item; }
+    return FALLBACK;
+  }
+
+  const chatMsgs = document.getElementById('chatMsgs');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const engineResTime = document.getElementById('engineResTime');
+  if (!chatForm || !chatMsgs) return;
+  const sendBtn = chatForm.querySelector('.chat-send');
+
+  function appendUserMsg(text) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg chat-msg--user';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+    div.appendChild(bubble);
+    chatMsgs.appendChild(div);
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+  }
+  function appendTyping() {
+    const div = document.createElement('div');
+    div.className = 'chat-msg chat-msg--ai';
+    div.id = 'chatTyping';
+    div.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
+    chatMsgs.appendChild(div);
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+  }
+  function removeTyping() {
+    const el = document.getElementById('chatTyping');
+    if (el) el.remove();
+  }
+  function appendAiMsg(item) {
+    const wrap = document.createElement('div');
+    wrap.className = 'chat-msg chat-msg--ai';
+    const inner = document.createElement('div');
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = item.answer;
+    const meta = document.createElement('div');
+    meta.className = 'chat-msg__meta';
+    const conf = document.createElement('span');
+    conf.className = 'conf';
+    const low = item.confidence < 60;
+    conf.style.color = item.confidence >= 85 ? 'var(--cyan)' : (item.confidence >= 60 ? 'var(--amber)' : 'var(--red)');
+    conf.style.background = item.confidence >= 85 ? 'var(--cyan-soft)' : (item.confidence >= 60 ? 'var(--amber-soft)' : 'var(--red-soft)');
+    conf.textContent = item.confidence + '% confidence';
+    const src = document.createElement('span');
+    src.className = 'src';
+    src.textContent = low ? 'Escalating to a teammate' : ('via ' + item.source);
+    meta.appendChild(conf); meta.appendChild(src);
+    inner.appendChild(bubble); inner.appendChild(meta);
+    wrap.appendChild(inner);
+    chatMsgs.appendChild(wrap);
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+  }
+  function handleSend(rawText) {
+    const text = (rawText || '').trim();
+    if (!text) return;
+    appendUserMsg(text);
+    chatInput.value = '';
+    appendTyping();
+    if (sendBtn) sendBtn.disabled = true;
+    const delay = 700 + Math.random() * 900;
+    setTimeout(() => {
+      removeTyping();
+      appendAiMsg(findAnswer(text));
+      if (engineResTime) engineResTime.textContent = (delay / 1000).toFixed(1) + ' sec';
+      if (sendBtn) sendBtn.disabled = false;
+      chatInput.focus();
+    }, delay);
+  }
+  chatForm.addEventListener('submit', (e) => { e.preventDefault(); handleSend(chatInput.value); });
+  document.querySelectorAll('.chip').forEach((chip) => {
+    chip.addEventListener('click', () => handleSend(chip.dataset.q));
+  });
+})();
+
+// ============ RAG PIPELINE GRAPH (clean SVG bowtie + interactive) ============
+(function () {
+  const svg = document.getElementById('ragSvg');
+  const tooltip = document.getElementById('ragTooltip');
+  const wrap = document.getElementById('ragGraphWrap');
+  if (!svg || !wrap) return;
+  const NS = 'http://www.w3.org/2000/svg';
+  const VB_W = 640, VB_H = 240;
+
+  const nodes = {
+    kb:      { x: 60,  y: 36,  r: 11, label: 'KB Docs',         desc: 'Help docs & articles, chunked and embedded ahead of time.' },
+    ticket:  { x: 60,  y: 120, r: 11, label: 'Ticket',          desc: "The customer's incoming question, embedded in real time." },
+    history: { x: 60,  y: 204, r: 11, label: 'History',         desc: 'Prior turns in this conversation, kept for context.' },
+    hub:     { x: 300, y: 120, r: 21, label: 'NVIDIA NIM Embed', desc: 'Converts text into vectors in ~12ms on GPU.', hub: true },
+    vdb:     { x: 470, y: 52,  r: 11, label: 'Vector DB',       desc: 'pgvector ANN search finds the top-5 closest chunks in ~3ms.' },
+    claude:  { x: 470, y: 188, r: 11, label: 'Claude 3.5',      desc: 'Generates a grounded, cited response from retrieved context.' },
+    resp:    { x: 600, y: 120, r: 13, label: 'Response',       desc: 'Auto-sent if confidence ≥95% — otherwise drafted for review.' }
+  };
+  const edges = [['kb','hub'],['ticket','hub'],['history','hub'],['hub','vdb'],['hub','claude'],['vdb','resp'],['claude','resp']];
+
+  function el(tag, attrs) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  function curvePath(a, b) {
+    const midX = a.x + (b.x - a.x) * 0.5;
+    return 'M' + a.x + ',' + a.y + ' C' + midX + ',' + a.y + ' ' + midX + ',' + b.y + ' ' + b.x + ',' + b.y;
+  }
+
+  const defs = el('defs', {});
+  const marker = el('marker', { id: 'rgArrow', viewBox: '0 0 10 10', refX: '7', refY: '5', markerWidth: '6', markerHeight: '6', orient: 'auto-start-reverse' });
+  marker.appendChild(el('path', { d: 'M0,0 L10,5 L0,10 Z', fill: '#465065' }));
+  defs.appendChild(marker);
+  svg.appendChild(defs);
+
+  const lineEls = {};
+  edges.forEach(([from, to]) => {
+    const a = nodes[from], b = nodes[to];
+    const path = el('path', {
+      d: curvePath(a, b), fill: 'none', stroke: 'rgba(255,255,255,.16)', 'stroke-width': '1.6',
+      'stroke-dasharray': '5 6', 'marker-end': 'url(#rgArrow)', class: 'rgline'
+    });
+    svg.appendChild(path);
+    lineEls[from + '-' + to] = path;
+  });
+
+  const nodeEls = {};
+  Object.keys(nodes).forEach((key) => {
+    const n = nodes[key];
+    const g = el('g', { class: 'rgnode' + (n.hub ? ' is-hub' : ''), tabindex: '0', role: 'button', 'aria-label': n.label });
+    g.appendChild(el('circle', { cx: n.x, cy: n.y, r: n.r + 8, class: 'rgnode__glow' }));
+    g.appendChild(el('circle', { cx: n.x, cy: n.y, r: n.r, class: 'rgnode__ring' }));
+    const label = el('text', { x: n.x, y: n.y + n.r + 16, 'text-anchor': 'middle', class: 'rgnode__label' });
+    label.textContent = n.label;
+    g.appendChild(label);
+    svg.appendChild(g);
+    nodeEls[key] = g;
+    g.addEventListener('mouseenter', () => setActive(key));
+    g.addEventListener('focus', () => setActive(key));
+    g.addEventListener('click', () => setActive(key));
+  });
+
+  function connectedEdgeKeys(key) {
+    return edges.filter(([f, t]) => f === key || t === key).map(([f, t]) => f + '-' + t);
+  }
+  function setActive(key) {
+    const activeEdges = connectedEdgeKeys(key);
+    Object.keys(lineEls).forEach((k) => lineEls[k].classList.toggle('is-active', activeEdges.includes(k)));
+    Object.keys(nodeEls).forEach((k) => {
+      const related = k === key || activeEdges.some((e) => e.startsWith(k + '-') || e.endsWith('-' + k));
+      nodeEls[k].classList.toggle('is-dim', !related);
+      nodeEls[k].classList.toggle('is-active-node', k === key);
+    });
+    const n = nodes[key];
+    tooltip.innerHTML = '<b>' + n.label + '</b>' + n.desc;
+    tooltip.style.opacity = 1;
+    const leftPct = (n.x / VB_W) * 100;
+    const topPct = (n.y / VB_H) * 100;
+    tooltip.style.left = Math.max(14, Math.min(86, leftPct)) + '%';
+    tooltip.style.top = (n.y < VB_H / 2 ? topPct + 16 : Math.max(0, topPct - 30)) + '%';
+  }
+  function clearActive() {
+    Object.values(lineEls).forEach((l) => l.classList.remove('is-active'));
+    Object.values(nodeEls).forEach((n) => { n.classList.remove('is-dim'); n.classList.remove('is-active-node'); });
+    tooltip.style.opacity = 0;
+  }
+
+  const order = ['kb', 'ticket', 'history', 'hub', 'vdb', 'claude', 'resp'];
+  let autoIdx = 0, hovering = false, autoTimer;
+  function autoStep() {
+    if (hovering) return;
+    setActive(order[autoIdx]);
+    autoIdx = (autoIdx + 1) % order.length;
+  }
+  wrap.addEventListener('mouseenter', () => { hovering = true; });
+  wrap.addEventListener('mouseleave', () => { hovering = false; clearActive(); });
+  autoStep();
+  autoTimer = setInterval(autoStep, 1800);
+})();
+
+// ============ CONFIDENCE BAR CHART (hover tooltip) ============
+(function () {
+  const bars = document.querySelectorAll('#confBars .bar-wrap');
+  const chart = bars.length ? bars[0].closest('.bar-chart') : null;
+  if (!bars.length || !chart) return;
+  const tooltip = document.createElement('div');
+  tooltip.className = 'bar-tooltip';
+  chart.appendChild(tooltip);
+  function show(bar) {
+    bars.forEach((b) => b.classList.toggle('is-dim', b !== bar));
+    bar.classList.add('is-active');
+    tooltip.innerHTML = '<b>' + bar.dataset.pct + '%</b> of tickets &middot; ~' + bar.dataset.count + ' today';
+    const barRect = bar.getBoundingClientRect();
+    const chartRect = chart.getBoundingClientRect();
+    tooltip.style.left = (barRect.left - chartRect.left + barRect.width / 2) + 'px';
+    tooltip.style.opacity = 1;
+  }
+  function hideAll() {
+    bars.forEach((b) => { b.classList.remove('is-dim'); b.classList.remove('is-active'); });
+    tooltip.style.opacity = 0;
+  }
+  bars.forEach((bar) => {
+    bar.addEventListener('mouseenter', () => show(bar));
+    bar.addEventListener('focus', () => show(bar));
+  });
+  chart.addEventListener('mouseleave', hideAll);
+})();
+
+// ============ CONVERSATION VOLUME CHART (hover tooltip) ============
+(function () {
+  const xs = [0, 46, 92, 138, 184, 230, 276, 322, 368, 414, 460, 506, 552, 600];
+  const ys = [70, 66, 62, 55, 52, 44, 40, 30, 26, 20, 14, 10, 8, 8];
+  const vals = [22, 27, 31, 39, 42, 51, 56, 67, 71, 78, 84, 89, 91, 91];
+  const days = ['D1','D2','D3','D4','D5','D6','D7','D8','D9','D10','D11','D12','D13','D14'];
+  const svg = document.getElementById('convoChartSvg');
+  const overlay = document.getElementById('convoOverlay');
+  const guide = document.getElementById('convoGuide');
+  const dot = document.getElementById('convoDot');
+  const tooltip = document.getElementById('convoTooltip');
+  if (!svg || !overlay) return;
+  function idxFromX(clientX) {
+    const rect = svg.getBoundingClientRect();
+    const scale = 600 / rect.width;
+    const vbX = Math.max(xs[0], Math.min(xs[xs.length - 1], (clientX - rect.left) * scale));
+    let best = 0, bestDist = Infinity;
+    xs.forEach((x, i) => { const d = Math.abs(x - vbX); if (d < bestDist) { bestDist = d; best = i; } });
+    return best;
+  }
+  function showAt(idx) {
+    const x = xs[idx], y = ys[idx];
+    guide.setAttribute('x1', x); guide.setAttribute('x2', x); guide.style.opacity = 1;
+    dot.setAttribute('cx', x); dot.setAttribute('cy', y); dot.style.opacity = 1;
+    tooltip.innerHTML = '<div class="ct-day">' + days[idx] + '</div><div class="ct-row"><span class="ct-sw" style="background:#22d3ee"></span>Volume<b>' + vals[idx] + '%</b></div>';
+    tooltip.style.opacity = 1;
+    tooltip.style.left = Math.max(10, Math.min(90, (x / 600) * 100)) + '%';
+  }
+  function hide() { guide.style.opacity = 0; dot.style.opacity = 0; tooltip.style.opacity = 0; }
+  overlay.addEventListener('mousemove', (e) => showAt(idxFromX(e.clientX)));
+  overlay.addEventListener('mouseleave', hide);
+  overlay.addEventListener('touchstart', (e) => showAt(idxFromX(e.touches[0].clientX)), { passive: true });
+  overlay.addEventListener('touchmove', (e) => showAt(idxFromX(e.touches[0].clientX)), { passive: true });
+})();
+
+// ============ RESOLUTION RATE TREND CHART (hover tooltip, dual series) ============
+(function () {
+  const xs = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300];
+  const yA = [60, 52, 46, 42, 44, 32, 26, 20, 12, 8, 6];
+  const yB = [128, 127, 126, 126, 125, 125, 123, 123, 121, 116, 118];
+  const valA = [61, 66, 71, 74, 72, 79, 83, 87, 92, 95, 97];
+  const valB = [18, 18, 19, 19, 19, 19, 20, 20, 21, 24, 22];
+  const labels = ['D1','D2','D3','D4','D5','D6','D7','D8','D9','D10','D11'];
+  const svg = document.getElementById('trendChartSvg');
+  const overlay = document.getElementById('trendOverlay');
+  const guide = document.getElementById('trendGuide');
+  const dotA = document.getElementById('trendDotA');
+  const dotB = document.getElementById('trendDotB');
+  const tooltip = document.getElementById('trendTooltip');
+  if (!svg || !overlay) return;
+  function idxFromX(clientX) {
+    const rect = svg.getBoundingClientRect();
+    const scale = 300 / rect.width;
+    const vbX = Math.max(xs[0], Math.min(xs[xs.length - 1], (clientX - rect.left) * scale));
+    const step = xs[1] - xs[0];
+    return Math.max(0, Math.min(xs.length - 1, Math.round((vbX - xs[0]) / step)));
+  }
+  function showAt(idx) {
+    const x = xs[idx];
+    guide.setAttribute('x1', x); guide.setAttribute('x2', x); guide.style.opacity = 1;
+    dotA.setAttribute('cx', x); dotA.setAttribute('cy', yA[idx]); dotA.style.opacity = 1;
+    dotB.setAttribute('cx', x); dotB.setAttribute('cy', yB[idx]); dotB.style.opacity = 1;
+    tooltip.innerHTML =
+      '<div class="ct-day">' + labels[idx] + '</div>' +
+      '<div class="ct-row"><span class="ct-sw" style="background:#22d3ee"></span>With Resolve<b>' + valA[idx] + '%</b></div>' +
+      '<div class="ct-row"><span class="ct-sw" style="background:#f3645b"></span>Before<b>' + valB[idx] + '%</b></div>';
+    tooltip.style.opacity = 1;
+    tooltip.style.left = Math.max(12, Math.min(88, (x / 300) * 100)) + '%';
+  }
+  function hide() { guide.style.opacity = 0; dotA.style.opacity = 0; dotB.style.opacity = 0; tooltip.style.opacity = 0; }
+  overlay.addEventListener('mousemove', (e) => showAt(idxFromX(e.clientX)));
+  overlay.addEventListener('mouseleave', hide);
+  overlay.addEventListener('touchstart', (e) => showAt(idxFromX(e.touches[0].clientX)), { passive: true });
+  overlay.addEventListener('touchmove', (e) => showAt(idxFromX(e.touches[0].clientX)), { passive: true });
+})();
+// ============ FLIP CARD SYSTEM (click/keyboard to reveal back face) ============
+document.querySelectorAll('.flip-card').forEach((card) => {
+  function toggleFlip(e) {
+    if (e && e.target.closest('a,button:not(.flip-affordance)')) return;
+    card.classList.toggle('is-flipped');
+  }
+  card.addEventListener('click', toggleFlip);
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFlip(); }
+  });
+});
+// ============ PARALLAX SCROLLING ============
+(function () {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const layers = Array.from(document.querySelectorAll('[data-parallax]'));
+  if (!layers.length) return;
+  let ticking = false;
+  function update() {
+    const y = window.scrollY;
+    layers.forEach((el) => {
+      const speed = parseFloat(el.dataset.parallax) || 0.2;
+      el.style.transform = 'translateY(' + (y * speed) + 'px)';
+    });
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  update();
+})();
+
+// ============ FUNCTIONAL EMAIL FORMS ============
+function wireSignupForm(formId, inputId) {
+  const form = document.getElementById(formId);
+  if (!form) return;
+  const input = document.getElementById(inputId);
+  const btn = form.querySelector('button[type="submit"]');
+  const originalText = btn.textContent;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const val = input.value.trim();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    if (!valid) {
+      input.classList.add('input-error');
+      input.focus();
+      setTimeout(() => input.classList.remove('input-error'), 1500);
+      return;
+    }
+    btn.disabled = true;
+    input.disabled = true;
+    btn.textContent = '✓ Check your inbox';
+    btn.classList.add('btn-success');
+    setTimeout(() => {
+      btn.disabled = false;
+      input.disabled = false;
+      input.value = '';
+      btn.textContent = originalText;
+      btn.classList.remove('btn-success');
+    }, 4000);
+  });
+}
+wireSignupForm('heroForm', 'heroEmail');
+wireSignupForm('ctaForm', 'ctaEmail');
+
+// ============ PROGRESS BAR SCROLL-FILL ANIMATION ============
+(function () {
+  const bars = document.querySelectorAll('.progress span[data-width]');
+  if (!bars.length || !('IntersectionObserver' in window)) {
+    bars.forEach((b) => { b.style.width = b.dataset.width + '%'; });
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.style.width = entry.target.dataset.width + '%';
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  bars.forEach((b) => io.observe(b));
+})();
+
+// ============ ROADMAP TIMELINE (click to focus) ============
+(function () {
+  const timeline = document.querySelector('.timeline');
+  if (!timeline) return;
+  const items = timeline.querySelectorAll('.timeline-item');
+  items.forEach((item) => {
+    const card = item.querySelector('.timeline-card');
+    if (!card) return;
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    function toggle() {
+      const wasFocused = item.classList.contains('is-focused');
+      items.forEach((i) => i.classList.remove('is-focused'));
+      timeline.classList.toggle('has-focus', !wasFocused);
+      if (!wasFocused) item.classList.add('is-focused');
+    }
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+})();
+
+// ============ PRICING PLAN SELECTOR ============
+(function () {
+  const list = document.getElementById('planList');
+  const result = document.getElementById('planResult');
+  if (!list || !result) return;
+  const options = list.querySelectorAll('.plan-option');
+  options.forEach((opt) => {
+    opt.setAttribute('tabindex', '0');
+    opt.setAttribute('role', 'button');
+    function select() {
+      options.forEach((o) => o.classList.remove('is-selected'));
+      opt.classList.add('is-selected');
+      const plan = opt.dataset.plan, price = opt.dataset.price, res = opt.dataset.resolutions;
+      const resText = res === 'unlimited' ? 'unlimited AI resolutions' : ('up to ' + res + ' AI resolutions/month');
+      result.innerHTML = 'Selected: <b>' + plan + '</b> — ' + price + ' for ' + resText + '.';
+    }
+    opt.addEventListener('click', select);
+    opt.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(); }
+    });
+  });
+})();
+
+// ============ LIVE STREAM ROWS (click to reveal resolution source) ============
+document.querySelectorAll('.stream-row').forEach((row) => {
+  const top = row.querySelector('.stream-row__top');
+  if (!top) return;
+  top.setAttribute('tabindex', '0');
+  top.setAttribute('role', 'button');
+  function toggle() { row.classList.toggle('is-open'); }
+  top.addEventListener('click', toggle);
+  top.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  });
+});
+</script>
+</body>
+</html>
