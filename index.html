@@ -105,7 +105,7 @@ h3{font-size:1.3rem}
   white-space:nowrap;transition:transform .15s ease,opacity .15s ease;
 }
 .btn:hover{transform:translateY(-1px)}
-.btn-primary{background:var(--cyan);color:#06141a}
+.btn-primary{background:var(--cyan);color:#ffffff}
 .btn-success{background:var(--green)!important;color:#06141a!important}
 .input-error{border-color:var(--red)!important}
 .btn-primary:hover{opacity:.9}
@@ -448,6 +448,37 @@ h3{font-size:1.3rem}
 .infra-grid{display:grid;gap:18px;margin-bottom:48px}
 @media (min-width:760px){.infra-grid{grid-template-columns:repeat(3,1fr)}}
 .infra-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);position:relative;overflow:hidden}
+
+/* ─── AWS ACTIVATE PITCH SECTION ────────────────────────────────── */
+.aws-pitch{
+  background:linear-gradient(135deg,#0d1f3c 0%,#0a1525 60%,#090c12 100%);
+  border:1px solid rgba(59,95,255,.25);border-radius:var(--radius);
+  padding:48px 40px;position:relative;overflow:hidden;margin-bottom:32px;
+}
+.aws-pitch::before{
+  content:'';position:absolute;top:-80px;right:-60px;width:380px;height:380px;
+  background:radial-gradient(circle,rgba(59,95,255,.12),transparent 70%);
+  pointer-events:none;
+}
+.aws-pitch__head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.aws-pitch__head .badge{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;
+  padding:5px 14px;border-radius:99px;background:rgba(59,95,255,.2);
+  border:1px solid rgba(59,95,255,.4);color:var(--cyan);flex-shrink:0;
+}
+.aws-pitch h3{font-size:1.45rem;margin-bottom:12px}
+.aws-pitch .sub{color:var(--text-dim);font-size:.97rem;line-height:1.65;max-width:680px;margin-bottom:28px}
+.aws-spend-grid{display:grid;gap:16px;margin-bottom:28px}
+@media (min-width:760px){.aws-spend-grid{grid-template-columns:repeat(3,1fr)}}
+.aws-spend-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-sm);padding:18px 16px}
+.aws-spend-card .service{font-family:var(--mono);font-size:.76rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.aws-spend-card .cost{font-family:var(--mono);font-weight:800;font-size:1.4rem;color:var(--cyan);margin-bottom:4px}
+.aws-spend-card .why{color:var(--text-dim);font-size:.82rem;line-height:1.5}
+.aws-spend-card .scale{font-family:var(--mono);font-size:.72rem;color:var(--text-faint);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.aws-total{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;background:rgba(59,95,255,.08);border:1px solid rgba(59,95,255,.3);border-radius:var(--radius-sm);padding:18px 22px}
+.aws-total .label{color:var(--text-dim);font-size:.95rem}
+.aws-total .amount{font-family:var(--mono);font-weight:800;font-size:1.6rem;color:var(--cyan)}
+.aws-total .note{font-family:var(--mono);font-size:.76rem;color:var(--text-faint)}
 .infra-card .flip-face{padding:22px}
 .infra-card .ico{font-size:1.3rem;margin-bottom:12px}
 .infra-card h4{color:var(--amber);font-size:1rem;margin-bottom:9px;font-weight:700}
@@ -722,7 +753,7 @@ h3{font-size:1.3rem}
       <a href="team.html">Team</a>
     </div>
     <div class="nav__right">
-      <a href="#cta" class="btn btn-primary btn-sm">Get Demo</a>
+      <a href="#cta" class="btn btn-primary btn-sm">Start Free Trial</a>
       <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -753,7 +784,7 @@ h3{font-size:1.3rem}
       </div>
       <form class="hero-form" id="heroForm">
         <input type="email" placeholder="Work email address" required aria-label="Work email address" id="heroEmail">
-        <button type="submit" class="btn btn-primary">Get Early Access →</button>
+        <button type="submit" class="btn btn-primary">Start Free Trial →</button>
       </form>
       <p class="fine-print" id="heroFinePrint">Free 30-day trial · No credit card required · Setup in 15 minutes</p>
     </div>
@@ -1370,7 +1401,7 @@ h3{font-size:1.3rem}
 
     <div class="reveal">
       <span class="pill-tag">⚡ How We Use AWS</span>
-      <div class="infra-banner"><p>We use AWS to host our backend APIs, store conversation data securely (AES-256 at rest), run AI workflows via Amazon Bedrock, manage authentication, deploy scalable serverless databases (Aurora), serve widget assets globally via CloudFront, monitor performance with CloudWatch, and process events at scale using Lambda and SQS.</p></div>
+      <div class="infra-banner"><p>Resolvix is built ground-up on AWS. Our architecture leverages <b>Amazon Bedrock</b> (Claude 3.5 Sonnet for AI inference at scale), <b>Aurora Serverless v2</b> with pgvector for semantic search across 10M+ knowledge chunks, <b>Lambda + SQS</b> for event-driven ticket ingestion at any volume, <b>CloudFront</b> for sub-20ms widget delivery globally, <b>Cognito</b> for multi-tenant authentication, <b>S3</b> for document storage and audit logs, and <b>CloudWatch + X-Ray</b> for full-stack observability. AWS credits directly fund our path from 12 beta customers to enterprise scale.</p></div>
       <div class="infra-grid">
         <div class="infra-card flip-card" tabindex="0" role="button" aria-label="Amazon Bedrock, click for detail">
           <div class="flip-stack">
@@ -1439,6 +1470,90 @@ h3{font-size:1.3rem}
             <div class="flip-face flip-face--back"><div class="back-tag">Index size</div><div class="back-stat">10M+ chunks</div><p class="back-note">The same search a CPU index would take ~900ms to run.</p></div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AWS ACTIVATE PITCH ============ -->
+<section class="section" id="aws-activate">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow eyebrow--cyan">☁ AWS Activate Application</span>
+      <h2>Why we're applying for <span class="cyan">$100K in AWS credits.</span></h2>
+      <p class="lede" style="margin:18px auto 0">Resolvix is an AWS-native product — not a startup that happens to run on AWS. Every dollar of credits maps directly to compute that scales real enterprise customers. Here's exactly where the credits go.</p>
+    </div>
+
+    <div class="aws-pitch reveal">
+      <div class="aws-pitch__head">
+        <span class="badge">☁ AWS Activate — Credit Allocation</span>
+      </div>
+      <h3>From 12 beta customers to 100+ enterprise accounts</h3>
+      <p class="sub">Our current infrastructure handles 2.4M tickets/month across 12 beta partners. The credits fund the multi-tenant scale-up needed to onboard our $180K ARR pipeline — without slowing down on revenue to fund infra.</p>
+
+      <div class="aws-spend-grid">
+        <div class="aws-spend-card">
+          <div class="service">Amazon Bedrock</div>
+          <div class="cost">~$38K</div>
+          <div class="why">Claude 3.5 Sonnet inference at scale. Current: ~800K tokens/day. Target: 12M tokens/day across 100 enterprise accounts.</div>
+          <div class="scale">Scales 1:1 with ticket volume — no cap</div>
+        </div>
+        <div class="aws-spend-card">
+          <div class="service">Aurora Serverless v2</div>
+          <div class="cost">~$22K</div>
+          <div class="why">pgvector index grows with each customer's knowledge base. Target: 50M+ embedded chunks across 100 tenants at peak read load.</div>
+          <div class="scale">ACU auto-scaling under concurrent queries</div>
+        </div>
+        <div class="aws-spend-card">
+          <div class="service">Lambda + SQS + EventBridge</div>
+          <div class="cost">~$14K</div>
+          <div class="why">Async ingestion pipelines, nightly re-sync jobs, webhook delivery. Burst capacity during onboarding of large enterprise knowledge bases.</div>
+          <div class="scale">~40M Lambda invocations/month at scale</div>
+        </div>
+        <div class="aws-spend-card">
+          <div class="service">S3 + CloudFront</div>
+          <div class="cost">~$9K</div>
+          <div class="why">Widget CDN delivery (&lt;20ms P99 globally), document storage for 100+ tenant knowledge bases, conversation transcript archive, audit logs.</div>
+          <div class="scale">Multi-region replication for EU/APAC</div>
+        </div>
+        <div class="aws-spend-card">
+          <div class="service">OpenSearch Serverless</div>
+          <div class="cost">~$11K</div>
+          <div class="why">Full-text + semantic hybrid search across ticket history. Enterprise customers require sub-500ms cross-tenant analytics at scale.</div>
+          <div class="scale">OCU auto-provisioning on demand</div>
+        </div>
+        <div class="aws-spend-card">
+          <div class="service">Cognito + KMS + CloudWatch</div>
+          <div class="cost">~$6K</div>
+          <div class="why">Multi-tenant SSO, AES-256 encryption key rotation, full distributed tracing (X-Ray), CloudWatch dashboards per enterprise customer.</div>
+          <div class="scale">SOC 2 audit trail from day one</div>
+        </div>
+      </div>
+
+      <div class="aws-total">
+        <div>
+          <div class="label">Total AWS credit request</div>
+          <div class="note">Over 12-month scale-up period · consumption-based · scales with ARR</div>
+        </div>
+        <div class="amount">$100,000</div>
+      </div>
+    </div>
+
+    <div class="grid-3 reveal">
+      <div class="card">
+        <div style="font-family:var(--mono);font-size:.72rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Current AWS spend</div>
+        <div style="font-family:var(--mono);font-size:1.6rem;font-weight:800;color:var(--cyan);margin-bottom:6px">$1,200/mo</div>
+        <div style="color:var(--text-dim);font-size:.88rem;line-height:1.55">Across 12 beta customers. Bedrock + Aurora + Lambda today. Credits fund 10× scale without choking ARR.</div>
+      </div>
+      <div class="card">
+        <div style="font-family:var(--mono);font-size:.72rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Projected spend @ 100 customers</div>
+        <div style="font-family:var(--mono);font-size:1.6rem;font-weight:800;color:var(--cyan);margin-bottom:6px">$8,400/mo</div>
+        <div style="color:var(--text-dim);font-size:.88rem;line-height:1.55">Bedrock inference is our dominant COGS line. More customers = more AWS spend. Credits bridge the gap to self-funding.</div>
+      </div>
+      <div class="card">
+        <div style="font-family:var(--mono);font-size:.72rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">AWS services used</div>
+        <div style="font-family:var(--mono);font-size:1.6rem;font-weight:800;color:var(--cyan);margin-bottom:6px">9 services</div>
+        <div style="color:var(--text-dim);font-size:.88rem;line-height:1.55">Bedrock, Aurora, Lambda, SQS, S3, CloudFront, OpenSearch, Cognito, CloudWatch + X-Ray. Not a single-service deployment.</div>
       </div>
     </div>
   </div>
@@ -1536,7 +1651,7 @@ h3{font-size:1.3rem}
   <div class="container">
     <div class="section-head reveal">
       <span class="eyebrow eyebrow--cyan">📈 Traction &amp; MVP Status</span>
-      <h2>We're not "coming soon." <span class="cyan">We're in production.</span></h2>
+      <h2>Live in production. <span class="cyan">AWS credits unlock enterprise scale.</span></h2>
       <p class="lede" style="margin:18px auto 0">Beta access is live. Twelve design partners are running Resolvix in production today.</p>
     </div>
 
@@ -1688,7 +1803,7 @@ h3{font-size:1.3rem}
     <p class="lede">Join 200+ support teams already running on Resolvix. Setup in 15 minutes. First 1,000 AI resolutions free.</p>
     <form class="cta-form" id="ctaForm">
       <input type="email" placeholder="Work email address" required aria-label="Work email address" id="ctaEmail">
-      <button type="submit" class="btn btn-primary">Get Access →</button>
+      <button type="submit" class="btn btn-primary">Start Free Trial →</button>
     </form>
     <div class="cta-check">
       <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Free 30-day trial</span>
@@ -1718,7 +1833,7 @@ h3{font-size:1.3rem}
       </div>
       <div class="footer-col">
         <h5>Product</h5>
-        <ul><li><a href="how-it-works.html">How it Works</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="#preview">Dashboard</a></li><li><a href="#cta">Get Early Access</a></li></ul>
+        <ul><li><a href="how-it-works.html">How it Works</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="#preview">Dashboard</a></li><li><a href="#aws-activate">AWS Architecture</a></li><li><a href="#cta">Start Free Trial</a></li></ul>
       </div>
       <div class="footer-col">
         <h5>Company</h5>
