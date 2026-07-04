@@ -100,11 +100,12 @@ h3{font-size:1.25rem}
 .flip-face--back{opacity:0;transform:scale(.97);pointer-events:none;padding:28px 24px}
 .flip-card.is-flipped .flip-face--front{opacity:0;transform:scale(.97);pointer-events:none}
 .flip-card.is-flipped .flip-face--back{opacity:1;transform:scale(1);pointer-events:auto}
-.flip-affordance{position:absolute;bottom:18px;right:20px;width:22px;height:22px;border-radius:50%;border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--text-faint)}
-.flip-card.is-flipped .flip-affordance{transform:rotate(45deg)}
-.back-tag{font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px}
-.back-stat{font-family:var(--mono);font-size:1.3rem;font-weight:800;margin-bottom:10px}
-.back-note{color:var(--text-dim);font-size:.85rem;line-height:1.55}
+.flip-affordance{position:absolute;bottom:16px;right:18px;width:24px;height:24px;border-radius:50%;border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:.82rem;color:var(--text-faint);transition:border-color .2s,color .2s,transform .2s}
+.flip-card:hover .flip-affordance{border-color:var(--cyan);color:var(--cyan)}
+.flip-card.is-flipped .flip-affordance{transform:rotate(45deg);border-color:var(--cyan);color:var(--cyan)}
+.back-tag{font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px}
+.back-stat{font-family:var(--mono);font-size:1.35rem;font-weight:800;margin-bottom:10px;color:var(--text)}
+.back-note{color:var(--text-dim);font-size:.84rem;line-height:1.6;margin:0}
 
 /* ---- nav ---- */
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,12,18,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
@@ -255,13 +256,21 @@ h3{font-size:1.25rem}
 .flow-grid{display:grid;gap:22px;grid-template-columns:1fr;margin-bottom:60px}
 @media (min-width:680px){.flow-grid{grid-template-columns:1fr 1fr}}
 @media (min-width:1080px){.flow-grid{grid-template-columns:repeat(5,1fr)}}
-.flow-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;position:relative;overflow:hidden}
-.flow-card .flip-face--front{padding:0}
-.flow-card .step-no{font-family:var(--mono);color:var(--text-faint);font-size:.8rem;margin-bottom:10px}
-.flow-card .icon-box{width:42px;height:42px;border-radius:10px;background:var(--cyan-soft);color:var(--cyan);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+
+/* Card itself has NO padding — each face owns its own */
+.flow-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:0;position:relative;overflow:hidden}
+
+/* Front face: extra bottom padding keeps text clear of the "+" button */
+.flow-card .flip-face--front{padding:24px 20px 52px;display:flex;flex-direction:column;min-height:210px}
+
+/* Back face: override the shared flip-face--back padding, vertically centered */
+.flow-card .flip-face--back{padding:26px 22px!important;display:flex;flex-direction:column;justify-content:center;min-height:210px}
+
+.flow-card .step-no{font-family:var(--mono);color:var(--text-faint);font-size:.78rem;margin-bottom:12px;flex-shrink:0}
+.flow-card .icon-box{width:42px;height:42px;border-radius:10px;background:var(--cyan-soft);color:var(--cyan);display:flex;align-items:center;justify-content:center;margin-bottom:16px;flex-shrink:0}
 .flow-card .icon-box svg{width:20px;height:20px}
-.flow-card h3{font-size:1.02rem;margin-bottom:8px}
-.flow-card p{color:var(--text-dim);font-size:.84rem;line-height:1.55}
+.flow-card h3{font-size:1rem;margin-bottom:8px;line-height:1.25}
+.flow-card p{color:var(--text-dim);font-size:.84rem;line-height:1.58;margin:0}
 .flow-arrow{display:none;align-items:center;justify-content:center;color:var(--text-faint)}
 @media (min-width:1080px){.flow-grid{position:relative}}
 
